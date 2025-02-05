@@ -1,0 +1,15 @@
+<!-- quotes/templates/quotes/show_all.html -->
+{% extends 'quotes/base.html' %} {% load static %} {% block content %}
+<h2>Sun Tzu Quotes</h2>
+
+{% for quote, image in paired_data %}
+<div>
+  <img
+    class="quotes-image"
+    src="{% static 'quotes/' %}{{ image }}"
+    alt="Quote Image"
+  />
+
+  <p>{{ quote }}</p>
+</div>
+{% endfor %} {% endblock %}

@@ -1,0 +1,29 @@
+<!-- quotes/templates/quotes/about.html -->
+{% extends 'quotes/base.html' %} {% load static %} {% block content %}
+<div>
+  <h2>Sun Tzu</h2>
+  <img
+    class="quotes-image"
+    src="{% static 'quotes/' %}{{ image }}"
+    alt="Quote Image"
+  />
+
+  <h2>About Sun Tzu</h2>
+  <p>Sun Tzu was a Chinese military strategist, philosopher, and the reputed
+    author of The Art of War, an influential treatise on strategy and warfare.
+    Believed to have lived during the Eastern Zhou period (circa 5th century BCE),
+    his teachings emphasize intelligence, adaptability, and psychological tactics
+    over brute force. The Art of War remains a cornerstone in military doctrine,
+    business strategy, and competitive thinking worldwide.
+  </p>
+  </br>
+
+  <h2>Why Sun Tzu Is Important</h2>
+  <p>This web application was created to bring the timeless wisdom of Sun Tzu
+    to a modern audience. It aims to make his insights easily accessible to all.
+    Whether you're a strategist, a history enthusiast, or just someone who enjoys
+    thought-provoking quotes, I hope this project inspires you to think critically
+    and strategically.
+  </p>
+</div>
+{% endblock %}

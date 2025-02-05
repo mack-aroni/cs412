@@ -1,0 +1,19 @@
+<!-- quotes/templates/quotes/base.html -->
+{% load static %}
+<html>
+  <head>
+    <title>Quotes</title>
+    <link rel="stylesheet" href="{% static 'quotes/styles.css' %}" />
+  </head>
+  <body>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'quote' %}">Quote</a></li>
+        <li><a href="{% url 'show_all' %}">All Quotes</a></li>
+        <li><a href="{% url 'about' %}">About</a></li>
+      </ul>
+    </nav>
+    <div class="container">{% block content %} {% endblock %}</div>
+  </body>
+</html>
