@@ -1,0 +1,36 @@
+<!-- restaurant/templates/restaurant/main.html -->
+{% extends 'restaurant/base.html' %} {% load static %} {% block content %}
+<div>
+  <img
+    class="restaurant-image"
+    src="{% static 'restaurant/' %}{{ image }}"
+    alt="Restaurant Image"
+  />
+
+  <h1>The Pizzeria</h1>
+  <h2>Boston, MA</h2>
+  <h2>Hours</h2>
+  <table>
+    <tr>
+      <td>Monday</td>
+      <td>9am-9pm</td>
+    </tr>
+    <tr>
+      <td>Tuesday</td>
+      <td>9am-9pm</td>
+    </tr>
+    <tr>
+      <td>Wednesday</td>
+      <td>9am-9pm</td>
+    </tr>
+    <tr>
+      <td>Thursday</td>
+      <td>9am-9pm</td>
+    </tr>
+    <tr>
+      <td>Friday</td>
+      <td>9am-9pm</td>
+    </tr>
+  </table>
+</div>
+{% endblock %}
