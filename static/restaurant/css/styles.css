@@ -36,6 +36,11 @@ img {
   border: 3px solid black;
 }
 
+table {
+  font-size: 16;
+  margin: 0 auto; 
+}
+
 nav {
   display: flex;
   justify-content: space-between;

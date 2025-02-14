@@ -1,0 +1,57 @@
+<!-- restaurant/templates/restaurant/order.html -->
+{% extends 'restaurant/base.html' %} {% load static %} {% block content %}
+<div>
+  <h1>Place Order</h1>
+
+  <form action="{% url 'confirmation' %}" method="POST">
+    {% csrf_token %}
+    <h2>Pie Type</h2>
+    <label>
+      <input type="checkbox" name="pie" value="regular"/>
+      Regular Pie ($12)
+    </label>
+    </br>
+    <label>
+      <input type="checkbox" name="pie" value="new_york"/>
+      New York Style ($10)
+    </label>
+    </br>
+    <label>
+      <input type="checkbox" name="pie" value="deep_dish"/>
+      Deep Dish ($14)
+    </label>
+
+    <h2>Daily Special Topping</h2>
+    <label>
+      <input type="checkbox" name="topping" value="{{special}}" />
+      {{special}}
+    </label>
+
+    <h2>Additional Information</h2>
+    <label>
+      Note any additional instuctions: </br>
+      <textarea id="description" name="description" rows="4" cols="50">
+      </textarea>
+    </label>
+
+    <h2>Customer Information</h2>
+    <label>
+      Name:
+      <input type="text" id="name" name="name" required/>
+    </label>
+    </br>
+    <label>
+      Phone:
+      <input type="text" id="phone" name="phone" requiredd/>
+    </label>
+    </br>
+    <label>
+      Email:
+      <input type="text" id="email" name="email" required/>
+    </label>
+
+    <h2>Place Order</h2>
+    <input type="submit" />
+  </form>
+</div>
+{% endblock %}

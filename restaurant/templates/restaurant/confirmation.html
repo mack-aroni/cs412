@@ -1,0 +1,51 @@
+<!-- restaurant/templates/restaurant/confirmation.html -->
+{% extends 'restaurant/base.html' %} {% load static %} {% block content %}
+<div>
+  <h1>Order Confirmed</h1>
+
+  <p>Your order will be ready at {{ready_time}}</p>
+
+  <h2>Order:</h2>
+  <table>
+    {% for p in pies %}
+    <tr>
+      <h3>{{p}}</h3>
+    </tr>
+    {% endfor %}
+  </table>
+
+  {% if topping %}
+  <h2>Daily Special:</h2>
+  <table>
+    {% for t in topping %}
+    <tr>
+      <h3>{{t}}</h3>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+
+  <h2>Special Instructions:</h2>
+  <p>{{description}}</p>
+
+  <h2>Total:</h2>
+  <table>
+    <tr>
+      <h3>${{cost}}</h3>
+    </tr>
+  </table>
+
+  <h2>Customer Info:</h2>
+  <table>
+    <tr>
+      <h3>Name: {{name}}</h3>
+    </tr>
+    <tr>
+      <h3>Phone: {{phone}}</h3>
+    </tr>
+    <tr>
+      <h3>Email: {{email}}</h3>
+    </tr>
+  </table>
+</div>
+{% endblock %}
