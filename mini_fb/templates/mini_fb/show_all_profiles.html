@@ -10,17 +10,17 @@
   {% for a in profiles %}
   <article>
     {% if a.profile_image_url %}
-    <img src="{{a.profile_image_url}}" alt="{{a.profile_image_url}}" />
+    <a href="{% url 'show_profile' a.pk %}">
+      <img src="{{a.profile_image_url}}" alt="{{a.profile_image_url}}" />
+    </a>
     {% endif %}
 
     <div>
       <h2>{{a.fname}} {{a.lname}}</h2>
-
       <p>Email: {{a.email}}</p>
       <p>City: {{a.city}}</p>
     </div>
   </article>
-
   {% endfor %}
 </main>
 {% endblock %}
