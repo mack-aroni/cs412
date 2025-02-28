@@ -1,0 +1,26 @@
+<!-- mini_fb/templates/mini_fb/create_status_form.html  -->
+{% extends 'mini_fb/base.html' %} {% block content %}
+<h2>Add a status message about {{profile}}</h2>
+
+<form method="POST">
+  <!-- talk about CSRF -->
+  {% csrf_token %}
+
+  <!-- customized table version here -->
+
+  {% csrf_token %}
+  <table>
+    <tr>
+      <th>{{form.message.label}}</th>
+      <td>{{form.message}}</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <input type="submit" value="Add Status" />
+      </td>
+    </tr>
+  </table>
+</form>
+
+{% endblock %}

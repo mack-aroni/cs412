@@ -18,5 +18,18 @@
       <p>City: {{profile.city}}</p>
     </div>
   </article>
+
+  <div>
+    <h2>Status Messages</h2>
+    <h3>
+      <a href="{% url 'create_status' profile.pk %}">Create Status</a>
+    </h3>
+    <!-- Display the status messages about this profile -->
+    {% for message in profile.get_status_messages %}
+    <div>
+      <p>{{message.message}} </br> {{message.timestamp|date:"M d, Y H:i"}}</p>
+    </div>
+    {% endfor %}
+  </div>
 </main>
 {% endblock %}

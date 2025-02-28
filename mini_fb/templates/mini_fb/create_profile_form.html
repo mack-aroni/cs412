@@ -1,0 +1,16 @@
+<!--  mini_fb/templates/mini_fb/create_profile_form.html 
+    display the HTML form to create a new Profile object.
+-->
+{% extends 'mini_fb/base.html' %} {% block content %}
+<h1>Create a Profile</h1>
+
+<!-- display the HTML form -->
+<form action="{% url 'create_profile' %}" method="POST">
+  {% csrf_token %}
+  <table>
+    {{form.as_table}}
+  </table>
+
+  <input type="submit" name="submit" value="Submit" />
+</form>
+{% endblock %}
