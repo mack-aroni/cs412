@@ -1,0 +1,28 @@
+<!-- blog/templates/blog/update_article_form.html -->
+{% extends 'blog/base.html' %} {% block content %}
+<h2>Update an Article for the Blog</h2>
+
+<form method="POST" enctype="multipart/form-data">
+  <!-- talk about CSRF -->
+  {% csrf_token %}
+
+  <!-- customized table version here -->
+
+  {% csrf_token %}
+  <table>
+    {% for field in form %}
+    <tr>
+      <th>{{field.name}}</th>
+      <td>{{field}}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td></td>
+      <td>
+        <input type="submit" name="update_article" value="Update Article!" />
+      </td>
+    </tr>
+  </table>
+</form>
+
+{% endblock %}

@@ -1,31 +1,45 @@
 <!-- blog/article.html 
     display a single article on this web page
 -->
-{% extends 'blog/base.html' %} {% block content %}
+{% extends 'blog/base.html' %}
 <h1>{{article.title}}</h1>
 
+{% block content %}
 <main class="grid-container">
   <article class="featured">
-    <img src="{{article.image_url}}" alt="" />
+    {% if article.image_file %}
+    <img src="{{article.image_file.url}}" alt="{{article.image_file.url}}" />
+    {% endif %}
+
     <div>
       <h2>{{article.title}}</h2>
-      <h3>by {{article.author}} at {{article.published}}</h3>
+      <strong>by {{article.author}} at {{article.published}}</strong>
       <p>{{article.text}}</p>
     </div>
+    <h3><a href="{% url 'update_article' article.pk %}">Update Article</a></h3>
   </article>
 
   <div>
     <h2>Comments</h2>
+
     <h3>
       <a href="{% url 'create_comment' article.pk %}">Create a comment</a>
     </h3>
-    <!-- Display the comments about this article -->
-    <!-- {{article.get_all_comments}} -->
-    {% for comment in article.get_comments %}
-    <div>
-      <strong>by {{comment.author}} at {{comment.published}}</strong>
-      <p>{{comment.text}}</p>
-    </div>
+
+    <!-- Comments:
+    {{article.get_comments}} -->
+
+    {% for c in article.get_comments %}
+    <article>
+      <div>
+        <strong>by {{c.author}} at {{c.published}}</strong>
+        <p>
+          {{c.text}}
+          <a href="{% url 'delete_comment' c.pk %}">Delete</a>
+          <!-- NEW -->
+        </p>
+      </div>
+    </article>
     {% endfor %}
   </div>
 </main>
