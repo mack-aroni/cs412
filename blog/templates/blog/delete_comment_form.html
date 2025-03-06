@@ -6,6 +6,11 @@
 {{comment}}
 <p></p>
 
+<form method="POST">
+  {% csrf_token %}
+  <input type="submit" value="Delete" />
+</form>
+
 <form action="{% url 'article' comment.article.pk %}" method="GET">
   {% csrf_token %}
   <input type="submit" value="Cancel" />
