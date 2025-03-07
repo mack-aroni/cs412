@@ -1,6 +1,5 @@
 <!-- mini_fb/templates/mini_fb/show_profile.html -->
 {% extends 'mini_fb/base.html' %}
-<h1>{{article.title}}</h1>
 
 {% block content %}
 <main class="grid-container">
@@ -17,6 +16,9 @@
       <p>Email: {{profile.email}}</p>
       <p>City: {{profile.city}}</p>
     </div>
+    <h3>
+      <a href="{% url 'update_profile' profile.pk %}">Update Profile</a>
+    </h3>
   </article>
 
   <div>
@@ -27,7 +29,20 @@
     <!-- Display the status messages about this profile -->
     {% for message in profile.get_status_messages %}
     <div>
+      {% for img in message.get_images %}
+      <img
+        class="status-message-image"
+        src="{{img.image_file.url}}"
+        alt="{{img.image_file.url}}"
+      />
+      {% endfor %}
       <p>{{message.message}} </br> {{message.timestamp|date:"M d, Y H:i"}}</p>
+      <table>
+        <tr>
+          <td><a href="{% url 'delete_status' message.pk %}">Delete</a></td>
+          <td><a href="{% url 'update_status' message.pk %}">Update</a></td>
+        </tr>
+      </table>
     </div>
     {% endfor %}
   </div>

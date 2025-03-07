@@ -2,7 +2,7 @@
 {% extends 'mini_fb/base.html' %} {% block content %}
 <h2>Add a status message about {{profile}}</h2>
 
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
   <!-- talk about CSRF -->
   {% csrf_token %}
 
@@ -10,6 +10,10 @@
 
   {% csrf_token %}
   <table>
+    <tr>
+      <th>Add Images</th>
+      <td><input type="file" name="files" multiple /></td>
+    </tr>
     <tr>
       <th>{{form.message.label}}</th>
       <td>{{form.message}}</td>

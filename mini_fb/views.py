@@ -1,6 +1,7 @@
-from .models import Profile
+from .models import *
 from django.views.generic import ListView, DetailView, CreateView
-from .forms import CreateProfileForm, CreateStatusMessageForm
+from django.views.generic.edit import UpdateView, DeleteView
+from .forms import *
 from django.urls import reverse
 
 class ShowAllView(ListView):
@@ -37,7 +38,6 @@ class CreateStatusMessageView(CreateView):
 
         # calling the superclass method
         context = super().get_context_data()
-        print("CONTEXT", context)
 
         # find/add the article to the context data
         # retrieve the PK from the URL pattern
@@ -64,11 +64,26 @@ class CreateStatusMessageView(CreateView):
         # attach this article to the comment
         form.instance.profile = profile # set the FK
 
+        # Save the StatusMessage object
+        sm = form.save()
+
+        # Retrieve uploaded files
+        files = self.request.FILES.getlist('files')  
+        print(f"Uploaded files: {files}")
+
+        # Process each uploaded file
+        for file in files:
+            image = Image(profile=profile, image_file=file)
+            image.save()  # Save Image object to DB
+
+            status_image = StatusImage(status_message=sm, image=image)
+            status_image.save()  # Save StatusImage object to link StatusMessage and Image
+        
         # delegate the work to the superclass method form_valid:
         return super().form_valid(form)
         
             
-    ## show how the reverse function uses the urls.py to find the URL pattern
+    # show how the reverse function uses the urls.py to find the URL pattern
     def get_success_url(self):
         '''Provide a URL to redirect to after creating a new Comment.'''
 
@@ -76,3 +91,81 @@ class CreateStatusMessageView(CreateView):
         pk = self.kwargs['pk']
         # call reverse to generate the URL for this Article
         return reverse('show_profile', kwargs={'pk':pk})
+        
+class UpdateProfileView(UpdateView):
+    '''A view to update an Profile and save it to the database.'''
+    
+    model = Profile
+    form_class = UpdateProfileForm
+    template_name = "mini_fb/update_profile_form.html"
+    
+    def form_valid(self, form):
+        '''
+        Handle the form submission to create a new Profile object.
+        '''
+        print(f'UpdateProfileView: form.cleaned_data={form.cleaned_data}')
+
+        return super().form_valid(form)
+
+class DeleteStatusMessageView(DeleteView):
+    '''A view to delete a StatusMessage and remove it from the database.'''
+
+    template_name = "mini_fb/delete_status_form.html"
+    model = StatusMessage
+    context_object_name = 'message'
+    
+    def get_success_url(self):
+        '''Return a the URL to which we should be directed after the delete.'''
+
+        # get the pk for this message
+        pk = self.kwargs.get('pk')
+        message = StatusMessage.objects.get(pk=pk)
+        
+        # find the Profile to which this StatusMessage is related by FK
+        profile = message.profile
+        
+        # reverse to show the Profile page
+        return reverse('show_profile', kwargs={'pk':profile.pk})
+
+class UpdateStatusView(UpdateView):
+    '''A view to update an StatusMessage and save it to the database.'''
+    
+    model = StatusMessage
+    form_class = UpdateStatusForm
+    template_name = "mini_fb/update_status_form.html"
+    
+    def get_context_data(self):
+        '''Return the dictionary of context variables for use in the template.'''
+
+        # calling the superclass method
+        context = super().get_context_data()
+
+        # find/add the profile to the context data
+        # retrieve the PK from the URL pattern
+        pk = self.kwargs['pk']
+        profile = Profile.objects.get(pk=pk)
+
+        # add this article into the context dictionary:
+        context['profile'] = profile
+        return context
+
+    def form_valid(self, form):
+        '''
+        Handle the form submission to create a new Profile object.
+        '''
+        print(f'UpdateStatusView: form.cleaned_data={form.cleaned_data}')
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        '''Return a the URL to which we should be directed after the delete.'''
+
+        # get the pk for this message
+        pk = self.kwargs.get('pk')
+        message = StatusMessage.objects.get(pk=pk)
+        
+        # find the Profile to which this StatusMessage is related by FK
+        profile = message.profile
+        
+        # reverse to show the Profile page
+        return reverse('show_profile', kwargs={'pk':profile.pk})
