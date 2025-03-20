@@ -27,4 +27,9 @@
   </table>
 </form>
 
+<form action="{% url 'show_profile' profile.pk %}" method="GET">
+  {% csrf_token %}
+  <input type="submit" value="Cancel" />
+</form>
+
 {% endblock %}
