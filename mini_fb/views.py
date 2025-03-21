@@ -1,8 +1,9 @@
 from .models import *
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import View, ListView, DetailView, CreateView
 from django.views.generic.edit import UpdateView, DeleteView
 from .forms import *
 from django.urls import reverse
+from django.shortcuts import redirect
 
 class ShowAllView(ListView):
     '''Create a subclass of ListView to display all blog profiles.'''
@@ -13,7 +14,13 @@ class ShowAllView(ListView):
 class ShowProfilePageView(DetailView):
     '''Show the details for one profile.'''
     model = Profile
-    template_name = 'mini_fb/show_profile.html' ## reusing same template!!
+    template_name = 'mini_fb/show_profile.html'
+    context_object_name = 'profile'
+
+class ShowFriendSuggestionsView(DetailView):
+    '''Show the friend suggestions for one profile.'''
+    model = Profile
+    template_name = 'mini_fb/friend_suggestions.html'
     context_object_name = 'profile'
 
 # define a subclass of CreateView to handle creation of Profile objects
@@ -169,3 +176,14 @@ class UpdateStatusView(UpdateView):
         
         # reverse to show the Profile page
         return reverse('show_profile', kwargs={'pk':profile.pk})
+
+class AddFriendView(View):
+    '''A view to add a Profile as a Friend to the database.'''
+
+    def dispatch(self, request, profile1_pk, profile2_pk, *args, **kwargs):
+        profile1 = Profile.objects.get(pk=profile1_pk)
+        profile2 = Profile.objects.get(pk=profile2_pk)
+
+        profile1.add_friend(profile2)
+
+        return redirect(reverse('show_profile', kwargs={'pk': profile1_pk}))

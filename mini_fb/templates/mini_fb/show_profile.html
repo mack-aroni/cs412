@@ -21,30 +21,53 @@
     </h3>
   </article>
 
-  <div>
+  <div class="container">
+    <h2>{{profile}}'s Friends</h2>
+    <!-- Display the friends of this profile -->
+    <table>
+      {% for friend in profile.get_friends %}
+        <tr>
+          {% if friend.profile_image_url %}
+          <a href="{% url 'show_profile' friend.pk %}">
+            <img src="{{friend.profile_image_url}}" alt="{{friend.profile_image_url}}" />
+          </a>
+          {% endif %}
+          <h3>{{friend.fname}} {{friend.lname}}</h3>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <div class="container">
     <h2>Status Messages</h2>
     <h3>
       <a href="{% url 'create_status' profile.pk %}">Create Status</a>
     </h3>
     <!-- Display the status messages about this profile -->
-    {% for message in profile.get_status_messages %}
-    <div>
-      {% for img in message.get_images %}
-      <img
-        class="status-message-image"
-        src="{{img.image_file.url}}"
-        alt="{{img.image_file.url}}"
-      />
-      {% endfor %}
-      <p>{{message.message}} </br> {{message.timestamp|date:"M d, Y H:i"}}</p>
       <table>
+        {% for message in profile.get_status_messages %}
         <tr>
-          <td><a href="{% url 'delete_status' message.pk %}">Delete</a></td>
-          <td><a href="{% url 'update_status' message.pk %}">Update</a></td>
+          {% for img in message.get_images %}
+          <img
+            class="status-message-image"
+            src="{{img.image_file.url}}"
+            alt="{{img.image_file.url}}"
+          />
+          {% endfor %}
+          <h4>{{message.message}} </br> {{message.timestamp|date:"M d, Y H:i"}}</h4>
+          <table>
+            <tr>
+              <td><a href="{% url 'delete_status' message.pk %}">Delete</a></td>
+              <td><a href="{% url 'update_status' message.pk %}">Update</a></td>
+            </tr>
+          </table>
         </tr>
-      </table>
-    </div>
-    {% endfor %}
+        {% endfor %}
+    </table>
+  </div>
+
+  <div>
+    <a href="{% url 'show_friend_suggestions' profile.pk%}">View Friend Suggestions</a>
   </div>
 </main>
 {% endblock %}

@@ -22,6 +22,39 @@ class Profile(models.Model):
 
         status_messages = StatusMessage.objects.filter(profile=self).order_by('-timestamp')
         return status_messages
+
+    def get_friends(self):
+        '''Return all of the Friends of this Profile.'''
+
+        friends = Friend.objects.filter(models.Q(profile1=self) | models.Q(profile2=self))
+        friend_profiles = [f.profile1 if f.profile2 == self else f.profile2 for f in friends]
+        return friend_profiles
+
+    def add_friend(self, other):
+        '''Add another Profile as a Friend'''
+        if self == other:
+            return
+        
+        existing_friendship = Friend.objects.filter(
+            (models.Q(profile1=self, profile2=other) | models.Q(profile1=other, profile2=self))
+        ).exists()
+        
+        if not existing_friendship:
+            Friend.objects.create(profile1=self, profile2=other)
+
+    def get_friend_suggestions(self):
+        '''Return all Profiles who are not Friends of this Profile.'''
+
+        # Get all the friends of this profile
+        friends = Friend.objects.filter(models.Q(profile1=self) | models.Q(profile2=self))
+
+        # Get a list of profiles that are friends with this profile
+        friend_profiles = [f.profile1 if f.profile2 == self else f.profile2 for f in friends]
+
+        # Get all profiles excluding the current profile and the friends list
+        non_friends = Profile.objects.exclude(id=self.id).exclude(id__in=[profile.id for profile in friend_profiles])
+
+        return non_friends
     
     def get_absolute_url(self):
         '''Return the URL to display one instance of this model.'''
@@ -68,3 +101,16 @@ class StatusImage(models.Model):
     def __str__(self):
         '''Return a string representation of this StatusImage object'''
         return f'{self.status_message.message} ({self.image.image_file})'
+
+class Friend(models.Model):
+    '''Encapsulate the idea of a Friend by some user'''
+    
+    # data attributes of a Friend:
+    profile1 = models.ForeignKey("Profile", on_delete=models.CASCADE, related_name="profile1")
+    profile2 = models.ForeignKey("Profile", on_delete=models.CASCADE, related_name="profile2")
+    timestamp = models.DateTimeField(auto_now=True)
+
+
+    def __str__(self):
+        '''Return a string representation of this Friend object'''
+        return f'{self.profile1} & {self.profile2}'

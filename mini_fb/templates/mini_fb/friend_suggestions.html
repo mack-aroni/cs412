@@ -1,0 +1,19 @@
+<!-- mini_fb/templates/mini_fb/friend_suggestions.html -->
+{% extends 'mini_fb/base.html' %}
+<h1>Showing Potential friends</h1>
+
+{% block content %}
+<main class="grid-container">
+  {% for p in profile.get_friend_suggestions %}
+  <article>
+    <a href="{% url 'add_friend' profile.pk p.pk %}">Add Friend</a>
+    {% if p.profile_image_url %}
+    <a href="{% url 'show_profile' p.pk %}">
+      <img src="{{p.profile_image_url}}" alt="{{p.profile_image_url}}" />
+    </a>
+    {% endif %}
+    <h3>{{p.fname}} {{p.lname}}</h3>
+  </article>
+  {% endfor %}
+</main>
+{% endblock %}
