@@ -1,19 +1,27 @@
-<!-- mini_fb/templates/mini_fb/show_all_profiles.html -->
-{% extends 'mini_fb/base.html' %}
-<h1>Showing all Profiles</h1>
-<!-- scriptlet code to display the value of the variable `profiles` 
-{{ profiles }}
+<!-- mini_fb/templates/mini_fb/show_all_profiles.html
+    File: show_all_profiles.html
+    Author: Ethan Machleder (emach@bu.edu) Feb 21, 2025
+    Description: This template displays a list of all profiles, showing the
+    profile image, name, email, and city for each user.
 -->
-{% block content %}
+
+{% extends 'mini_fb/base.html' %} {% block content %}
+<!-- Heading for the list of all profiles -->
+<h1>Showing All Profiles</h1>
+
+<!-- Main content area for displaying the list of profiles in a grid layout -->
 <main class="grid-container">
+  <!-- Loop through each profile in the 'profiles' list -->
   {% for a in profiles %}
   <article>
+    <!-- Check if the profile has an image and display it -->
     {% if a.profile_image_url %}
     <a href="{% url 'show_profile' a.pk %}">
       <img src="{{a.profile_image_url}}" alt="{{a.profile_image_url}}" />
     </a>
     {% endif %}
 
+    <!-- Display the profile's name, email, and city -->
     <div>
       <h2>{{a.fname}} {{a.lname}}</h2>
       <p>Email: {{a.email}}</p>
@@ -22,4 +30,5 @@
   </article>
   {% endfor %}
 </main>
+
 {% endblock %}

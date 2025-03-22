@@ -1,17 +1,31 @@
-<!-- mini_fb/templates/mini_fb/friend_suggestions.html -->
-{% extends 'mini_fb/base.html' %}
-<h1>Showing Potential friends</h1>
+<!-- mini_fb/templates/mini_fb/friend_suggestions.html
+    File: friend_suggestions.html
+    Author: Ethan Machleder (emach@bu.edu) Mar 21, 2025
+    Description: This template displays potential friends for the user, 
+    showing their profile image (if available) and allowing the user
+    to add them as friends.
+-->
 
-{% block content %}
+{% extends 'mini_fb/base.html' %} {% block content %}
+<!-- Heading for the list of potential friends -->
+<h1>Showing Potential Friends</h1>
+
+<!-- Main content area for displaying potential friends in a grid layout -->
 <main class="grid-container">
+  <!-- Loop through each potential friend suggestion -->
   {% for p in profile.get_friend_suggestions %}
   <article>
+    <!-- Link to add the suggested friend -->
     <a href="{% url 'add_friend' profile.pk p.pk %}">Add Friend</a>
+
+    <!-- Display profile image if available -->
     {% if p.profile_image_url %}
     <a href="{% url 'show_profile' p.pk %}">
       <img src="{{p.profile_image_url}}" alt="{{p.profile_image_url}}" />
     </a>
     {% endif %}
+
+    <!-- Display the potential friend's full name -->
     <h3>{{p.fname}} {{p.lname}}</h3>
   </article>
   {% endfor %}

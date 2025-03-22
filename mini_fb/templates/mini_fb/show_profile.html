@@ -1,8 +1,17 @@
-<!-- mini_fb/templates/mini_fb/show_profile.html -->
+<!-- mini_fb/templates/mini_fb/show_profile.html
+    File: show_profile.html
+    Author: Ethan machleder (emach@bu.edu) Feb 21, 2025
+    Description: This template displays a user's profile, including their
+    personal information, friends, status messages, and friend suggestions.
+-->
+
 {% extends 'mini_fb/base.html' %}
 
 {% block content %}
+<!-- Main content area for displaying the user's profile -->
 <main class="grid-container">
+
+  <!-- Display the user's profile image and details -->
   <article class="featured">
     {% if profile.profile_image_url %}
     <img
@@ -16,14 +25,20 @@
       <p>Email: {{profile.email}}</p>
       <p>City: {{profile.city}}</p>
     </div>
+    
+    <!-- Links to update profile and view news feed -->
     <h3>
       <a href="{% url 'update_profile' profile.pk %}">Update Profile</a>
     </h3>
+    <h3>
+      <a href="{% url 'show_news_feed' profile.pk %}">View News Feed</a>
+    </h3>
   </article>
 
+  <!-- Section displaying the user's friends -->
   <div class="container">
     <h2>{{profile}}'s Friends</h2>
-    <!-- Display the friends of this profile -->
+    <!-- Display each of the user's friends -->
     <table>
       {% for friend in profile.get_friends %}
         <tr>
@@ -38,36 +53,43 @@
     </table>
   </div>
 
+  <!-- Section displaying the user's status messages -->
   <div class="container">
     <h2>Status Messages</h2>
     <h3>
       <a href="{% url 'create_status' profile.pk %}">Create Status</a>
     </h3>
-    <!-- Display the status messages about this profile -->
-      <table>
-        {% for message in profile.get_status_messages %}
-        <tr>
-          {% for img in message.get_images %}
-          <img
-            class="status-message-image"
-            src="{{img.image_file.url}}"
-            alt="{{img.image_file.url}}"
-          />
-          {% endfor %}
-          <h4>{{message.message}} </br> {{message.timestamp|date:"M d, Y H:i"}}</h4>
-          <table>
-            <tr>
-              <td><a href="{% url 'delete_status' message.pk %}">Delete</a></td>
-              <td><a href="{% url 'update_status' message.pk %}">Update</a></td>
-            </tr>
-          </table>
-        </tr>
+    <!-- Display each status message posted by the user -->
+    <table>
+      {% for message in profile.get_status_messages %}
+      <tr>
+        <!-- Display images attached to the status message -->
+        {% for img in message.get_images %}
+        <img
+          class="status-message-image"
+          src="{{img.image_file.url}}"
+          alt="{{img.image_file.url}}"
+        />
         {% endfor %}
+        <!-- Display the status message content and timestamp -->
+        <h4>{{message.message}} </br> {{message.timestamp|date:"M d, Y H:i"}}</h4>
+        
+        <!-- Links to delete or update the status message -->
+        <table>
+          <tr>
+            <td><a href="{% url 'delete_status' message.pk %}">Delete</a></td>
+            <td><a href="{% url 'update_status' message.pk %}">Update</a></td>
+          </tr>
+        </table>
+      </tr>
+      {% endfor %}
     </table>
   </div>
 
+  <!-- Link to view friend suggestions -->
   <div>
     <a href="{% url 'show_friend_suggestions' profile.pk%}">View Friend Suggestions</a>
   </div>
+
 </main>
 {% endblock %}

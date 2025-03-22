@@ -1,21 +1,37 @@
-<!-- mini_fb/templates/mini_fb/base.html -->
+<!-- mini_fb/templates/mini_fb/base.html
+    File: base.html
+    Author: Ethan Machleder (emach@bu.edu) Feb 21, 2025
+    Description: The base HTML structure for the Mini FB web application. 
+    This template includes a header with navigation links and a placeholder
+    for content.
+-->
+
 {% load static %}
+
 <html>
   <head>
+    <!-- Page title and stylesheet link -->
     <title>Mini FB</title>
     <link rel="stylesheet" href="{% static 'mini_fb/css/styles.css' %}" />
   </head>
   <body>
     <header>
+      <!-- Main header of the page with site title -->
       <h1>Mini FB</h1>
+
+      <!-- Navigation bar with links to different sections of the site -->
       <nav>
         <ul>
+          <!-- Link to the 'Home' page (showing all profiles) -->
           <li><a href="{% url 'show_all_profiles' %}">Home</a></li>
+
+          <!-- Link to the 'Create Profile' page -->
           <li><a href="{% url 'create_profile' %}">Create Profile</a></li>
         </ul>
       </nav>
     </header>
 
+    <!-- Content block where individual pages will render their unique content -->
     {% block content %} {% endblock %}
   </body>
 </html>

@@ -1,0 +1,54 @@
+<!-- mini_fb/templates/mini_fb/news_feed.html
+    File: news_feed.html
+    Author: Ethan Machleder (emach@bu.edu) Mar 21, 2025
+    Description: This template displays the news feed for a user, showing
+    messages, profile images, and any associated images with the posts.
+-->
+
+{% extends 'mini_fb/base.html' %}
+
+{% block content %}
+<!-- Heading for the news feed -->
+<h1>News Feed</h1>
+
+<!-- Main content area for displaying the news feed -->
+<div>
+  <table>
+    <!-- Loop through each message in the user's news feed -->
+    {% for message in profile.get_news_feed %}
+    <tr>
+      <!-- Display the profile image of the person who posted the message -->
+      <td>
+        {% if message.profile.profile_image_url %}
+        <img
+          class="profile-picture-image"
+          style="width: 50px; height: 50px; object-fit: cover;"
+          src="{{message.profile.profile_image_url}}"
+          alt="{{message.profile.profile_image_url}}"
+        />
+        {% endif %}
+      </td>
+      <!-- Display the name of the person who posted the message -->
+      <td>
+        <h2>{{message.profile.fname}} {{message.profile.lname}}</h2>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <!-- Loop through images attached to the message and display them -->
+        {% for img in message.get_images %}
+        <img
+          class="status-message-image"
+          src="{{img.image_file.url}}"
+          alt="{{img.image_file.url}}"
+        />
+        {% endfor %}
+        <!-- Display the message content along with the timestamp -->
+        <h4>{{message.message}} </br> {{message.timestamp|date:"M d, Y H:i"}}</h4>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

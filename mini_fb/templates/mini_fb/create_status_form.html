@@ -1,23 +1,34 @@
-<!-- mini_fb/templates/mini_fb/create_status_form.html  -->
+<!-- mini_fb/templates/mini_fb/create_status_form.html
+    File: create_status_form.html
+    Author: Ethan Machleder (emach@bu.edu) Feb 28, 2025
+    Description: This template displays the form to add a status message about
+    a specific profile, allowing the user to upload images and write a message.
+-->
+
 {% extends 'mini_fb/base.html' %} {% block content %}
+<!-- Heading for adding a status message about the given profile -->
 <h2>Add a status message about {{profile}}</h2>
 
+<!-- Form to upload images and create a status message -->
 <form method="POST" enctype="multipart/form-data">
-  <!-- talk about CSRF -->
+  <!-- CSRF token to protect against cross-site request forgery -->
   {% csrf_token %}
 
-  <!-- customized table version here -->
-
-  {% csrf_token %}
+  <!-- Custom table to organize form fields -->
   <table>
+    <!-- Table row for uploading images -->
     <tr>
       <th>Add Images</th>
       <td><input type="file" name="files" multiple /></td>
     </tr>
+
+    <!-- Table row for the status message input -->
     <tr>
       <th>{{form.message.label}}</th>
       <td>{{form.message}}</td>
     </tr>
+
+    <!-- Submit button for adding the status -->
     <tr>
       <td></td>
       <td>
@@ -27,8 +38,12 @@
   </table>
 </form>
 
+<!-- Form for canceling the status creation and redirecting back to the profile -->
 <form action="{% url 'show_profile' profile.pk %}" method="GET">
+  <!-- CSRF token for the cancel form -->
   {% csrf_token %}
+
+  <!-- Cancel button to return to the profile page -->
   <input type="submit" value="Cancel" />
 </form>
 

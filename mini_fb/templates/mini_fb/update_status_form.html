@@ -1,21 +1,29 @@
-<!-- mini_fb/templates/mini_fb/update_status_form.html -->
+<!-- mini_fb/templates/mini_fb/update_status_form.html
+    File: update_status_form.html
+    Author: Ethan Machleder (emach@bu.edu) Mar 7, 2025
+    Description: This template displays a form to update a blog article,
+    including the article content and images.
+-->
+
 {% extends 'mini_fb/base.html' %} {% block content %}
+<!-- Heading for the update article form -->
 <h2>Update an Article for the Blog</h2>
 
+<!-- Form to submit the updated article information -->
 <form method="POST" enctype="multipart/form-data">
-  <!-- talk about CSRF -->
+  <!-- CSRF token for security -->
   {% csrf_token %}
 
-  <!-- customized table version here -->
-
-  {% csrf_token %}
+  <!-- Customized table layout for the form fields -->
   <table>
     {% for field in form %}
     <tr>
+      <!-- Display the field name and its corresponding input field -->
       <th>{{field.name}}</th>
       <td>{{field}}</td>
     </tr>
     {% endfor %}
+    <!-- Submit button for updating the article -->
     <tr>
       <td></td>
       <td>
@@ -25,6 +33,7 @@
   </table>
 </form>
 
+<!-- Cancel button to return to the user's profile page without updating -->
 <form action="{% url 'show_profile' profile.pk %}" method="GET">
   {% csrf_token %}
   <input type="submit" value="Cancel" />
