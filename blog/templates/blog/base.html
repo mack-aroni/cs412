@@ -8,18 +8,37 @@
   </head>
 
   <body>
-    <head>
-      <h1>Our Blog</h1>
+    <header>
+      <h1>Blog</h1>
       <nav>
         <ul>
+          <!-- URLs for users who are not logged in -->
           <li><a href="{% url 'random' %}">Random</a></li>
           <li><a href="{% url 'show_all' %}">Show All</a></li>
-          <li><a href="{% url 'create_article' %}">Create</a></li>
-        </ul>
-      </nav>
-    </head>
 
-    <!-- substitute in the specific content here -->
+          <!-- URLs for logged in users only -->
+          {% if request.user.is_authenticated %}
+          <li><a href="{% url 'create_article' %}">Create</a></li>
+          <li>
+            <form method="POST" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <input type="submit" value="Log out" />
+              <input type="hidden" name="next" value="{% url 'show_all' %}" />
+            </form>
+          </li>
+
+          <!-- URLs for users who are not logged in -->
+          {% else %}
+          <li><a href="{% url 'login' %}">Login</a></li>
+          {% endif %}
+        </ul>
+
+        <!-- show who's logged in -->
+        {% if request.user.is_authenticated %} Logged in user: {{ request.user}}
+        {% else %} Not logged in {% endif %}
+      </nav>
+    </header>
+
     {% block content %} {% endblock %}
   </body>
 </html>
