@@ -27,9 +27,11 @@
     </div>
     
     <!-- Links to update profile and view news feed -->
+    {% if request.user == profile.user %}
     <h3>
       <a href="{% url 'update_profile' profile.pk %}">Update Profile</a>
     </h3>
+    {% endif %}
     <h3>
       <a href="{% url 'show_news_feed' profile.pk %}">View News Feed</a>
     </h3>
@@ -56,9 +58,11 @@
   <!-- Section displaying the user's status messages -->
   <div class="container">
     <h2>Status Messages</h2>
-    <h3>
-      <a href="{% url 'create_status' profile.pk %}">Create Status</a>
-    </h3>
+    {% if request.user == profile.user %}
+      <h3>
+        <a href="{% url 'create_status' profile.pk %}">Add Status Message</a>
+      </h3>
+    {% endif %}
     <!-- Display each status message posted by the user -->
     <table>
       {% for message in profile.get_status_messages %}
@@ -74,6 +78,7 @@
         <!-- Display the status message content and timestamp -->
         <h4>{{message.message}} </br> {{message.timestamp|date:"M d, Y H:i"}}</h4>
         
+        {% if request.user == profile.user %}
         <!-- Links to delete or update the status message -->
         <table>
           <tr>
@@ -81,6 +86,7 @@
             <td><a href="{% url 'update_status' message.pk %}">Update</a></td>
           </tr>
         </table>
+        {% endif %}
       </tr>
       {% endfor %}
     </table>

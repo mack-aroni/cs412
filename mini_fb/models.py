@@ -1,12 +1,12 @@
 # File: models.py
-# Author: Ethan Macheder (emach@bu.edu) 
+# Author: Ethan Macheder (emach@bu.edu) Feb 21, 2025
 # Description: This file defines the models used in the mini_fb app.
 # Models represent the database schema for the application.
 # These include the Profile, StatusMessage, Image, StatusImage, and Friend models.
 
 from django.db import models
 from django.urls import reverse
-
+from django.contrib.auth.models import User
 
 class Profile(models.Model):
     '''Encapsulate the idea of a Profile by some user'''
@@ -17,6 +17,7 @@ class Profile(models.Model):
     city = models.TextField(blank=False)   # City where the user resides
     email = models.TextField(blank=False)  # Email address of the user
     profile_image_url = models.URLField(blank=True)  # Profile image URL (optional)
+    user = models.ForeignKey(User, on_delete=models.CASCADE) # Link mini_fb Profile to django User
 
     def __str__(self):
         '''Return a string representation of this Profile object'''
