@@ -13,7 +13,10 @@ from django.views.generic.edit import UpdateView, DeleteView
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin 
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from django.contrib.auth import login
 
 class ShowAllView(ListView):
     '''Create a subclass of ListView to display all blog profiles.'''
@@ -33,11 +36,17 @@ class ShowFriendSuggestionsView(DetailView):
     template_name = 'mini_fb/friend_suggestions.html'  # Template for displaying friend suggestions
     context_object_name = 'profile'  # Name used to access the profile in the template file
 
+    def get_object(self):
+        return Profile.objects.get(user=self.request.user)
+
 class ShowNewsFeedView(DetailView):
     '''Show the news feed for one profile.'''
     model = Profile  # The Profile model we are working with
     template_name = 'mini_fb/news_feed.html'  # Template for displaying the profile's news feed
     context_object_name = 'profile'  # Name used to access the profile in the template file
+
+    def get_object(self):
+        return Profile.objects.get(user=self.request.user)
 
 class CreateProfileView(CreateView):
     '''A view to handle creation of a new Profile.
@@ -48,11 +57,36 @@ class CreateProfileView(CreateView):
     form_class = CreateProfileForm  # The form class to use for profile creation
     template_name = "mini_fb/create_profile_form.html"  # Template for creating a new profile
 
+class UpdateProfileView(LoginRequiredMixin, UpdateView):
+    '''A view to update a Profile and save it to the database.'''
+    
+    model = Profile  # The Profile model we are working with
+    form_class = UpdateProfileForm  # The form class to use for updating profiles
+    template_name = "mini_fb/update_profile_form.html"  # Template for updating a profile
+    
+    def get_object(self):
+        return Profile.objects.get(user=self.request.user)
+
+    def get_login_url(self):
+        '''return the URL required for login'''
+        return reverse('login')
+
+    def form_valid(self, form):
+        '''
+        Handle the form submission to create a new Profile object.
+        '''
+        print(f'UpdateProfileView: form.cleaned_data={form.cleaned_data}')
+        return super().form_valid(form)
+
 class CreateStatusMessageView(LoginRequiredMixin, CreateView):
     '''A view to create a new status message and save it to the database.'''
 
     form_class = CreateStatusMessageForm  # The form class to use for creating status messages
     template_name = "mini_fb/create_status_form.html"  # Template for creating a new status message
+
+    def get_login_url(self):
+        '''return the URL required for login'''
+        return reverse('login')
 
     def get_context_data(self):
         '''Return the dictionary of context variables for use in the template.'''
@@ -109,20 +143,6 @@ class CreateStatusMessageView(LoginRequiredMixin, CreateView):
         # Call reverse to generate the URL for this Profile
         return reverse('show_profile', kwargs={'pk': pk})
 
-class UpdateProfileView(LoginRequiredMixin, UpdateView):
-    '''A view to update a Profile and save it to the database.'''
-    
-    model = Profile  # The Profile model we are working with
-    form_class = UpdateProfileForm  # The form class to use for updating profiles
-    template_name = "mini_fb/update_profile_form.html"  # Template for updating a profile
-    
-    def form_valid(self, form):
-        '''
-        Handle the form submission to create a new Profile object.
-        '''
-        print(f'UpdateProfileView: form.cleaned_data={form.cleaned_data}')
-        return super().form_valid(form)
-
 class DeleteStatusMessageView(LoginRequiredMixin, DeleteView):
     '''A view to delete a StatusMessage and remove it from the database.'''
 
@@ -130,6 +150,10 @@ class DeleteStatusMessageView(LoginRequiredMixin, DeleteView):
     model = StatusMessage  # The StatusMessage model we are working with
     context_object_name = 'message'  # Name used to access the message in the template file
     
+    def get_login_url(self):
+        '''return the URL required for login'''
+        return reverse('login')
+
     def get_success_url(self):
         '''Return the URL to which we should be directed after the delete.'''
 
@@ -150,6 +174,10 @@ class UpdateStatusView(LoginRequiredMixin, UpdateView):
     form_class = UpdateStatusForm  # The form class to use for updating status messages
     template_name = "mini_fb/update_status_form.html"  # Template for updating a status message
     
+    def get_login_url(self):
+        '''return the URL required for login'''
+        return reverse('login')
+
     def get_context_data(self):
         '''Return the dictionary of context variables for use in the template.'''
         
@@ -184,19 +212,25 @@ class UpdateStatusView(LoginRequiredMixin, UpdateView):
         # Reverse to show the Profile page
         return reverse('show_profile', kwargs={'pk': profile.pk})
 
-class AddFriendView(LoginRequiredMixin, View):
+class AddFriendView(View):
     '''A view to add a Profile as a Friend to the database.'''
 
-    def dispatch(self, request, profile1_pk, profile2_pk, *args, **kwargs):
+    def get_object(self):
+        return Profile.objects.get(user=self.request.user)
+
+    def dispatch(self, request, friend_pk, *args, **kwargs):
 
         # INTERMEDIATE SOLUTION
-        if request.user.is_authenticated:
-            # Retrieve the profiles using their primary keys
-            profile1 = Profile.objects.get(pk=profile1_pk)
-            profile2 = Profile.objects.get(pk=profile2_pk)
+        if not request.user.is_authenticated:
+            # Redirect to the login page
+            return reverse('login')  
 
-            # Add profile2 as a friend to profile1
-            profile1.add_friend(profile2)
+        # Retrieve the profiles using their primary keys
+        crofile1 = self.get_object()
+        profile2 = Profile.objects.get(pk=friend_pk)
+
+        # Add profile2 as a friend to profile1
+        profile1.add_friend(profile2)
 
         # Redirect to the profile page of profile1
-        return redirect(reverse('show_profile', kwargs={'pk': profile1_pk}))
+        return redirect(reverse('show_profile', kwargs={'pk': profile1.pk}))

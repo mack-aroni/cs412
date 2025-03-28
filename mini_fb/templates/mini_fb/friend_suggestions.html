@@ -16,7 +16,7 @@
   {% for p in profile.get_friend_suggestions %}
   <article>
     <!-- Link to add the suggested friend -->
-    <a href="{% url 'add_friend' profile.pk p.pk %}">Add Friend</a>
+    <a href="{% url 'add_friend' p.pk %}">Add Friend</a>
 
     <!-- Display profile image if available -->
     {% if p.profile_image_url %}

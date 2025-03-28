@@ -1,0 +1,35 @@
+<!-- mini_fb/templates/mini_fb/templates/login.html
+    File: login.html
+    Author: Ethan Machleder (emach@bu.edu) Mar 26, 2025
+    Description: 
+    This template renders the login page for mini_fb. 
+    It includes a login form that submits user credentials and 
+    redirects the user to a specified next page upon successful login.
+-->
+
+{% extends 'mini_fb/base.html' %} {% block content %}
+
+<h1>Login</h1>
+
+<!-- Login Form -->
+<form method="POST" action="{% url 'login' %}">
+  {% csrf_token %} {{ form }}
+  <input type="submit" value="Login" />
+
+  <!-- Hidden 'next' input field to handle post-login redirection -->
+  {% if request.GET.next %}
+  <!-- If the login page was accessed due to an authentication requirement,
+   redirect back to the requested page -->
+  <input type="hidden" name="next" value="{{ request.GET.next }}" />
+  {% else %}
+  <!-- Otherwise, redirect to the default 'show_all_profiles' page after login -->
+  <input type="hidden" name="next" value="{% url 'show_all_profiles' %}" />
+  {% endif %}
+</form>
+
+<!-- Registration link -->
+{% comment %}
+<hr />
+Don't have an account?
+<a href="{% url 'register' %}">Register here</a>
+{% endcomment %} {% endblock %}

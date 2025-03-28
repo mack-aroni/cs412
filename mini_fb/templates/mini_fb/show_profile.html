@@ -29,11 +29,12 @@
     <!-- Links to update profile and view news feed -->
     {% if request.user == profile.user %}
     <h3>
-      <a href="{% url 'update_profile' profile.pk %}">Update Profile</a>
+      <a href="{% url 'update_profile' %}">Update Profile</a>
     </h3>
     {% endif %}
+    
     <h3>
-      <a href="{% url 'show_news_feed' profile.pk %}">View News Feed</a>
+      <a href="{% url 'show_news_feed' %}">View News Feed</a>
     </h3>
   </article>
 
@@ -49,9 +50,11 @@
             <img src="{{friend.profile_image_url}}" alt="{{friend.profile_image_url}}" />
           </a>
           {% endif %}
+
           <h3>{{friend.fname}} {{friend.lname}}</h3>
         </tr>
       {% endfor %}
+
     </table>
   </div>
 
@@ -63,6 +66,7 @@
         <a href="{% url 'create_status' profile.pk %}">Add Status Message</a>
       </h3>
     {% endif %}
+
     <!-- Display each status message posted by the user -->
     <table>
       {% for message in profile.get_status_messages %}
@@ -75,6 +79,7 @@
           alt="{{img.image_file.url}}"
         />
         {% endfor %}
+
         <!-- Display the status message content and timestamp -->
         <h4>{{message.message}} </br> {{message.timestamp|date:"M d, Y H:i"}}</h4>
         
@@ -87,15 +92,18 @@
           </tr>
         </table>
         {% endif %}
+
       </tr>
       {% endfor %}
     </table>
   </div>
 
   <!-- Link to view friend suggestions -->
+  {% if request.user == profile.user %}
   <div>
-    <a href="{% url 'show_friend_suggestions' profile.pk%}">View Friend Suggestions</a>
+    <a href="{% url 'show_friend_suggestions' %}">View Friend Suggestions</a>
   </div>
+  {% endif %}
 
 </main>
 {% endblock %}
