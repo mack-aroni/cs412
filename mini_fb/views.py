@@ -162,10 +162,11 @@ class CreateStatusMessageView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         '''Provide a URL to redirect to after creating a new Comment.'''
 
-        # Retrieve the PK from the URL pattern
-        pk = self.kwargs['pk']
+        # Retrieve the Profile from User object
+        profile = self.get_object()
+
         # Call reverse to generate the URL for this Profile
-        return reverse('show_profile', kwargs={'pk': pk})
+        return reverse('show_profile', kwargs={'pk': profile.pk})
 
 class DeleteStatusMessageView(LoginRequiredMixin, DeleteView):
     '''A view to delete a StatusMessage and remove it from the database.'''
