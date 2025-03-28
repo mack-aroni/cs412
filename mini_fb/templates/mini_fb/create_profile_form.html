@@ -13,7 +13,13 @@
   <!-- CSRF token to prevent cross-site request forgery attacks -->
   {% csrf_token %}
 
-  <!-- Table to display form fields -->
+  <h2>Account Information</h2>
+  <table>
+    <!-- Render form fields as a table -->
+    {{user_form.as_table}}
+  </table>
+
+  <h2>Profile Information</h2>
   <table>
     <!-- Render form fields as a table -->
     {{form.as_table}}

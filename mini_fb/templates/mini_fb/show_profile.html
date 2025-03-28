@@ -63,7 +63,7 @@
     <h2>Status Messages</h2>
     {% if request.user == profile.user %}
       <h3>
-        <a href="{% url 'create_status' profile.pk %}">Add Status Message</a>
+        <a href="{% url 'create_status' %}">Add Status Message</a>
       </h3>
     {% endif %}
 

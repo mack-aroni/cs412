@@ -57,6 +57,30 @@ class CreateProfileView(CreateView):
     form_class = CreateProfileForm  # The form class to use for profile creation
     template_name = "mini_fb/create_profile_form.html"  # Template for creating a new profile
 
+    def get_context_data(self, **kwargs):
+        """Provide both forms (UserCreationForm and ProfileForm) to the template."""
+        context = super().get_context_data(**kwargs)
+        if 'user_form' not in context:
+            context['user_form'] = UserCreationForm()  # Add UserCreationForm to context
+        return context
+
+    def form_valid(self, form):
+        """Process both forms together: create User first, then Profile."""
+        user_form = UserCreationForm(self.request.POST)  # Reconstruct user form
+
+        if user_form.is_valid():  
+            user = user_form.save()  # Save new User
+            login(self.request, user)  # Log in new User
+            form.instance.user = user  # Assign User to Profile
+            return super().form_valid(form)  # Save Profile
+
+        # If user_form is invalid, re-render page with errors
+        return self.render_to_response(self.get_context_data(form=form, user_form=user_form))
+
+    def get_success_url(self):
+        """Redirect to the user's profile page after successful profile creation."""
+        return reverse('show_profile', kwargs={'pk': self.object.pk})
+
 class UpdateProfileView(LoginRequiredMixin, UpdateView):
     '''A view to update a Profile and save it to the database.'''
     
@@ -88,15 +112,17 @@ class CreateStatusMessageView(LoginRequiredMixin, CreateView):
         '''return the URL required for login'''
         return reverse('login')
 
+    def get_object(self):
+        return Profile.objects.get(user=self.request.user)
+
     def get_context_data(self):
         '''Return the dictionary of context variables for use in the template.'''
         
         # Calling the superclass method
         context = super().get_context_data()
 
-        # Retrieve the PK from the URL pattern and find the associated profile
-        pk = self.kwargs['pk']
-        profile = Profile.objects.get(pk=pk)
+        # Retrieve the Profile from get_object 
+        profile = self.get_object()
 
         # Add the profile to the context dictionary
         context['profile'] = profile
@@ -112,9 +138,7 @@ class CreateStatusMessageView(LoginRequiredMixin, CreateView):
         # Instrument our code to display form fields
         print(f"CreateStatusMessageView.form_valid: form.cleaned_data={form.cleaned_data}")
         
-        # Retrieve the PK from the URL pattern and attach the Profile
-        pk = self.kwargs['pk']
-        profile = Profile.objects.get(pk=pk)
+        profile = self.get_object()
         form.instance.profile = profile  # Set the foreign key to the profile
 
         # Save the StatusMessage object
@@ -186,7 +210,9 @@ class UpdateStatusView(LoginRequiredMixin, UpdateView):
 
         # Retrieve the PK from the URL pattern and find the associated profile
         pk = self.kwargs['pk']
-        profile = Profile.objects.get(pk=pk)
+        message = StatusMessage.objects.get(pk=pk)
+        # Find the Profile to which this StatusMessage is related by FK
+        profile = message.profile
 
         # Add the profile to the context dictionary
         context['profile'] = profile
@@ -226,7 +252,7 @@ class AddFriendView(View):
             return reverse('login')  
 
         # Retrieve the profiles using their primary keys
-        crofile1 = self.get_object()
+        profile1 = self.get_object()
         profile2 = Profile.objects.get(pk=friend_pk)
 
         # Add profile2 as a friend to profile1
