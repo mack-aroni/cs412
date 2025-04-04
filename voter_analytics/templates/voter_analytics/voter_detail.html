@@ -1,7 +1,17 @@
+<!-- voter_analytics/templates/voter_analytics/voter_detail.html
+    File: voter_detail.html
+    Author: Ethan Machleder (emach@bu.edu) May 4, 2025
+    Description: Displays detailed information about a single voter,
+    including demographics, registration data, address, party affiliation,
+    voter score, and past election participation.
+-->
+
 {% extends 'voter_analytics/base.html' %} {% block content %}
 <div class="container">
+  <!-- Page heading -->
   <h1>Voter Details</h1>
 
+  <!-- Voter detail list -->
   <ul>
     <li><strong>Name:</strong> {{ voter.first_name }} {{ voter.last_name }}</li>
     <li><strong>Date of Birth:</strong> {{ voter.date_of_birth }}</li>
@@ -11,13 +21,15 @@
     <li>
       <strong>Address:</strong>
       {{ voter.street_number }} {{ voter.street_name }}
-      <!-- prettier-ignore -->
-      {% if voter.apartment_number %} Apt {{ voter.apartment_number }}, {% endif %}
-      {{ voter.zip_code }}
+      <!-- Conditionally render apartment number -->
+      {% if voter.apartment_number %} Apt {{ voter.apartment_number }}, {% endif
+      %} {{ voter.zip_code }}
     </li>
     <li><strong>Party Affiliation:</strong> {{ voter.party_affiliation }}</li>
     <li><strong>Precinct Number:</strong> {{ voter.precinct_number }}</li>
     <li><strong>Voter Score:</strong> {{ voter.voter_score }}</li>
+
+    <!-- Participation history using yes/no filter -->
     <li><strong>2020 State:</strong> {{ voter.v20state|yesno:"Yes,No" }}</li>
     <li><strong>2021 Town:</strong> {{ voter.v21town|yesno:"Yes,No" }}</li>
     <li>
@@ -29,7 +41,7 @@
     <li><strong>2023 Town:</strong> {{ voter.v23town|yesno:"Yes,No" }}</li>
   </ul>
 
-  <!-- Google Maps Link -->
+  <!-- External link to Google Maps based on voter address -->
   <p>
     <a
       href="https://www.google.com/maps/search/?api=1&query={{ voter.street_number }}+{{ voter.street_name }}+{{ voter.zip_code }}"
@@ -39,6 +51,7 @@
     </a>
   </p>
 
+  <!-- Link back to the full voter list -->
   <p><a href="{% url 'voters' %}">Back to list</a></p>
 </div>
 {% endblock %}

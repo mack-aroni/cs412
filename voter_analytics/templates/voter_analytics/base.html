@@ -1,7 +1,16 @@
-<!-- voter_analytics/templates/voter_analytics/base.html -->
+<!-- voter_analytics/templates/voter_analytics/base.html
+    File: base.html
+    Author: Ethan Machleder (emach@bu.edu) May 3, 2025
+    Description: Base template for the Voter Analytics web application.
+    This template includes the page structure and a header with navigation
+    links. It loads a static stylesheet and provides a block for page content.
+-->
+
 {% load static %}
+
 <html>
   <head>
+    <!-- Page title and link to static stylesheet -->
     <title>Voter Analytics</title>
     <link
       rel="stylesheet"
@@ -10,14 +19,22 @@
   </head>
   <body>
     <header>
+      <!-- Main header title -->
       <h1>Voter Analytics</h1>
+
+      <!-- Navigation bar with links to app pages -->
       <nav>
         <ul>
+          <!-- Link to the voter list view -->
           <li><a href="{% url 'voters' %}">Voter List</a></li>
+
+          <!-- Link to the graph analytics view -->
+          <li><a href="{% url 'graphs' %}">Graph View</a></li>
         </ul>
       </nav>
     </header>
 
+    <!-- Block for inserting content from other templates -->
     {% block content %} {% endblock %}
   </body>
 </html>

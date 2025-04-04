@@ -1,0 +1,42 @@
+<!-- voter_analytics/templates/voter_analytics/graphs.html
+    File: graphs.html
+    Author: Ethan Machleder (emach@bu.edu) May 4, 2025
+    Description: Displays analytical visualizations of voter data.
+    Includes a filter form and three interactive graphs:
+    1. Year of Birth distribution
+    2. Party Affiliation distribution
+    3. Election Participation rates
+-->
+
+{% extends 'voter_analytics/base.html' %} {% load static %} {% block content %}
+<div class="container">
+  <!-- Page heading -->
+  <h1>Voter Analytics Graphs</h1>
+
+  <!-- Filter Form -->
+  <form method="get" class="form">
+    {{ form.as_p }}
+    <button type="submit">Filter</button>
+  </form>
+
+  <hr />
+
+  <!-- Graph: Year of Birth Distribution -->
+  <div>
+    <h2>Year of Birth Distribution</h2>
+    {{ birth_year_chart|safe }}
+  </div>
+
+  <!-- Graph: Party Affiliation -->
+  <div>
+    <h2>Party Affiliation</h2>
+    {{ party_chart|safe }}
+  </div>
+
+  <!-- Graph: Election Participation -->
+  <div>
+    <h2>Election Participation</h2>
+    {{ election_chart|safe }}
+  </div>
+</div>
+{% endblock %}
