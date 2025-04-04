@@ -1,0 +1,64 @@
+{% extends 'voter_analytics/base.html' %} {% block content %}
+<div class="container">
+  <h1>Voter Records</h1>
+
+  <!-- Filter Form -->
+  <form method="get">
+    {{ form.as_p }}
+    <button type="submit">Filter</button>
+  </form>
+
+  <!-- Pagination Navigation -->
+  <div class="row">
+    {% if is_paginated %}
+    <ul class="pagination">
+      {% if page_obj.has_previous %}
+      <li><a href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+      {% endif %}
+      <li>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</li>
+      {% if page_obj.has_next %}
+      <li><a href="?page={{ page_obj.next_page_number }}">Next</a></li>
+      {% endif %}
+    </ul>
+    {% endif %}
+  </div>
+
+  <!-- Voter Data Table -->
+  <div class="row">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Date of Birth</th>
+          <th>Street Address</th>
+          <th>Party</th>
+          <th>Voter Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for voter in voters %}
+        <tr>
+          <td>
+            <a href="{% url 'voter' voter.pk %}">
+              {{ voter.first_name }} {{ voter.last_name }}
+            </a>
+          </td>
+          <td>{{ voter.date_of_birth }}</td>
+          <td>
+            {{voter.street_number}} {{voter.street_name}}.
+            <!-- prettier-ignore -->
+            {% if voter.apartment_number %} Apt {{voter.apartment_number}} {% endif %}
+          </td>
+          <td>{{ voter.party_affiliation }}</td>
+          <td>{{ voter.voter_score }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5">No voter records found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

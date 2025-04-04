@@ -2,22 +2,24 @@ from django.db import models
 import csv
 
 class Voter(models.Model):
-    #voter_id = models.CharField(max_length=20, unique=True)
     last_name = models.TextField()
     first_name = models.TextField()
+    date_of_birth = models.DateField()
+
     street_number = models.CharField(max_length=10)
     street_name = models.TextField()
     apartment_number = models.CharField(max_length=10, blank=True, null=True)
     zip_code = models.CharField(max_length=10)
-    date_of_birth = models.DateField()
+    
     date_of_registration = models.DateField()
     party_affiliation = models.CharField(max_length=2)
     precinct_number = models.CharField(max_length=10)
-    v20state = models.BooleanField()
-    v21town = models.BooleanField()
-    v21primary = models.BooleanField()
-    v22general = models.BooleanField()
-    v23town = models.BooleanField()
+
+    v20state = models.IntegerField()
+    v21town = models.IntegerField()
+    v21primary = models.IntegerField()
+    v22general = models.IntegerField()
+    v23town = models.IntegerField()
     voter_score = models.IntegerField()
 
     def __str__(self):
@@ -41,22 +43,22 @@ def load_data():
             
             try:
                 voter = Voter(
-                    last_name=row['Last Name'],
-                    first_name=row['First Name'],
-                    street_number=row['Residential Address - Street Number'],
-                    street_name=row['Residential Address - Street Name'],
-                    apartment_number=row['Residential Address - Apartment Number'] if row['Residential Address - Apartment Number'] else None,
-                    zip_code=row['Residential Address - Zip Code'],
-                    date_of_birth=row['Date of Birth'],
-                    date_of_registration=row['Date of Registration'],
-                    party_affiliation=row['Party Affiliation'].strip(),
-                    precinct_number=row['Precinct Number'],
-                    v20state=row['v20state'].strip().upper() == 'TRUE',
-                    v21town=row['v21town'].strip().upper() == 'TRUE',
-                    v21primary=row['v21primary'].strip().upper() == 'TRUE',
-                    v22general=row['v22general'].strip().upper() == 'TRUE',
-                    v23town=row['v23town'].strip().upper() == 'TRUE',
-                    voter_score=int(row['voter_score'])
+                    last_name =             row['Last Name'],
+                    first_name =            row['First Name'],
+                    street_number =         row['Residential Address - Street Number'],
+                    street_name =           row['Residential Address - Street Name'],
+                    apartment_number =      row['Residential Address - Apartment Number'] if row['Residential Address - Apartment Number'] else None,
+                    zip_code =              row['Residential Address - Zip Code'],
+                    date_of_birth =         row['Date of Birth'],
+                    date_of_registration =  row['Date of Registration'],
+                    party_affiliation =     row['Party Affiliation'].strip(),
+                    precinct_number =       row['Precinct Number'],
+                    v20state =              1 if row['v20state'].strip().upper() == 'TRUE' else 0,
+                    v21town =               1 if row['v21town'].strip().upper() == 'TRUE' else 0,
+                    v21primary =            1 if row['v21primary'].strip().upper() == 'TRUE' else 0,
+                    v22general =            1 if row['v22general'].strip().upper() == 'TRUE' else 0,
+                    v23town =               1 if row['v23town'].strip().upper() == 'TRUE' else 0,
+                    voter_score =           int(row['voter_score'])
                 )
                 voter.save()
                 print(f'Created voter: {voter}')
