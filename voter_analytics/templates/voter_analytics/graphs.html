@@ -19,22 +19,20 @@
     <button type="submit">Filter</button>
   </form>
 
-  <hr />
-
-  <!-- Graph: Year of Birth Distribution -->
-  <div>
+  <div class="graph-container">
+    <!-- Graph: Year of Birth Distribution -->
     <h2>Year of Birth Distribution</h2>
     {{ birth_year_chart|safe }}
   </div>
 
-  <!-- Graph: Party Affiliation -->
-  <div>
+  <div class="graph-container">
+    <!-- Graph: Party Affiliation -->
     <h2>Party Affiliation</h2>
     {{ party_chart|safe }}
   </div>
 
-  <!-- Graph: Election Participation -->
-  <div>
+  <div class="graph-container">
+    <!-- Graph: Election Participation -->
     <h2>Election Participation</h2>
     {{ election_chart|safe }}
   </div>

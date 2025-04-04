@@ -18,7 +18,7 @@
   </form>
 
   <!-- Pagination navigation controls -->
-  <div class="row">
+  <div class="pagination">
     {% if is_paginated %}
     <ul class="pagination">
       {% if page_obj.has_previous %}
@@ -36,45 +36,43 @@
   <h2>{{ voter_count }} voter{{ voter_count|pluralize }} found</h2>
 
   <!-- Table of voter information -->
-  <div class="row">
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Date of Birth</th>
-          <th>Street Address</th>
-          <th>Party</th>
-          <th>Voter Score</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Loop through each voter in the queryset -->
-        {% for voter in voters %}
-        <tr>
-          <!-- Link to detailed voter profile -->
-          <td>
-            <a href="{% url 'voter' voter.pk %}">
-              {{ voter.first_name }} {{ voter.last_name }}
-            </a>
-          </td>
-          <td>{{ voter.date_of_birth }}</td>
-          <td>
-            {{ voter.street_number }} {{ voter.street_name }}.
-            <!-- Optional apartment number if exists -->
-            <!-- prettier-ignore -->
-            {% if voter.apartment_number %} Apt {{ voter.apartment_number }} {% endif %}
-          </td>
-          <td>{{ voter.party_affiliation }}</td>
-          <td>{{ voter.voter_score }}</td>
-        </tr>
-        {% empty %}
-        <!-- Display message if no voters match the filters -->
-        <tr>
-          <td colspan="5">No voter records found.</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Date of Birth</th>
+        <th>Street Address</th>
+        <th>Party</th>
+        <th>Voter Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Loop through each voter in the queryset -->
+      {% for voter in voters %}
+      <tr>
+        <!-- Link to detailed voter profile -->
+        <td>
+          <a href="{% url 'voter' voter.pk %}">
+            {{ voter.first_name }} {{ voter.last_name }}
+          </a>
+        </td>
+        <td>{{ voter.date_of_birth }}</td>
+        <td>
+          {{ voter.street_number }} {{ voter.street_name }}.
+          <!-- Optional apartment number if exists -->
+          <!-- prettier-ignore -->
+          {% if voter.apartment_number %} Apt {{ voter.apartment_number }} {% endif %}
+        </td>
+        <td>{{ voter.party_affiliation }}</td>
+        <td>{{ voter.voter_score }}</td>
+      </tr>
+      {% empty %}
+      <!-- Display message if no voters match the filters -->
+      <tr>
+        <td colspan="5">No voter records found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 {% endblock %}
