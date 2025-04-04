@@ -61,8 +61,8 @@
           <td>
             {{ voter.street_number }} {{ voter.street_name }}.
             <!-- Optional apartment number if exists -->
-            {% if voter.apartment_number %} Apt {{ voter.apartment_number }} {%
-            endif %}
+            <!-- prettier-ignore -->
+            {% if voter.apartment_number %} Apt {{ voter.apartment_number }} {% endif %}
           </td>
           <td>{{ voter.party_affiliation }}</td>
           <td>{{ voter.voter_score }}</td>

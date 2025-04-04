@@ -22,8 +22,9 @@
       <strong>Address:</strong>
       {{ voter.street_number }} {{ voter.street_name }}
       <!-- Conditionally render apartment number -->
-      {% if voter.apartment_number %} Apt {{ voter.apartment_number }}, {% endif
-      %} {{ voter.zip_code }}
+      <!-- prettier-ignore -->
+      {% if voter.apartment_number %} Apt {{ voter.apartment_number }}, {% endif %}
+      {{ voter.zip_code }}
     </li>
     <li><strong>Party Affiliation:</strong> {{ voter.party_affiliation }}</li>
     <li><strong>Precinct Number:</strong> {{ voter.precinct_number }}</li>
