@@ -1,0 +1,27 @@
+body {
+  margin: 30px;
+  background: #d1dedd;
+  font-family: "Monaco", monospace;
+}
+
+.profile-image {
+  width: 75px;
+  height: 75px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.card-image {
+  width: 183px;
+  height: 256px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.card-grid {
+  width: 80%;
+  display: grid;
+  justify-self: center;
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+}

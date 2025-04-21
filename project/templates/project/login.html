@@ -1,0 +1,32 @@
+<!-- project/templates/project/login.html
+    File: base.html
+    Author: Ethan Machleder (emach@bu.edu) April 14, 2025
+    Description: 
+-->
+
+{% load static %}
+
+<html>
+  <head>
+    <title>PocketTraders</title>
+    <link rel="stylesheet" href="{% static 'project/css/styles.css' %}" />
+  </head>
+  <body>
+    <header>
+      <nav></nav>
+    </header>
+
+    <h1>Login</h1>
+
+    <form method="POST" action="{% url 'login' %}">
+      {% csrf_token %} {{ form }}
+      <input type="submit" value="Login" />
+
+      {% if request.GET.next %}
+      <input type="hidden" name="next" value="{{ request.GET.next }}" />
+      {% else %}
+      <input type="hidden" name="next" value="{% url 'profile' %}" />
+      {% endif %}
+    </form>
+  </body>
+</html>

@@ -1,0 +1,41 @@
+<!-- project/templates/project/temp_home.html
+    File: temp_home.html
+    Author: Ethan Machleder (emach@bu.edu) April 14, 2025
+    Description:
+-->
+
+{% extends 'project/base.html' %} {% block content %}
+<h1>Temp Home</h1>
+
+<main class="grid-container">
+  {% for p in pocket_profiles %}
+  <hr />
+
+  <article>
+    <div class="profile_icon">
+      {% if p.profile_image_url %}
+      <img
+        class="profile-image"
+        src="{{p.profile_image_url}}"
+        alt="{{p.profile_image_url}}"
+      />
+      {% endif %}
+
+      <h2>{{p.user}}</h2>
+    </div>
+
+    <hr />
+
+    <div class="card-grid">
+      {% for card_image in p.get_card_images %}
+      <div>
+        <img class="card-image" src="{{card_image}}" alt="{{card_image}}" />
+      </div>
+      {% endfor %}
+    </div>
+  </article>
+
+  {% endfor %}
+</main>
+
+{% endblock %}

@@ -1,0 +1,77 @@
+<!-- project/templates/project/card_catalog.html
+    File: card_catalog.html
+    Author: Ethan Machleder (emach@bu.edu) April 21, 2025
+    Description:
+-->
+
+{% extends 'project/base.html' %} {% block content %}
+<h1>Card Catalog</h1>
+
+<form method="get">
+  <fieldset>
+    <legend>Filter by Card Category</legend>
+    {{ form.mode }}
+  </fieldset>
+
+  <div id="pokemon-options" style="display: none">
+    <fieldset>
+      <legend>Pokemon Stages</legend>
+      {{ form.poke_stages }}
+    </fieldset>
+    <fieldset>
+      <legend>Pokemon Types</legend>
+      {{ form.poke_types }}
+    </fieldset>
+  </div>
+
+  <div id="trainer-options" style="display: none">
+    <fieldset>
+      <legend>Trainer Types</legend>
+      {{ form.trainer_types }}
+    </fieldset>
+  </div>
+
+  <button type="submit">Apply Filters</button>
+</form>
+
+<h3>{{ result_count }} cards found</h3>
+
+<main class="grid-container">
+  <article>
+    <div class="card-grid">
+      {% for c in card_list %}
+      <div>
+        <img
+          class="card-image"
+          src="{{ c.card_image_url }}"
+          alt="{{ c.card_image_url }}"
+        />
+      </div>
+      {% empty %}
+      <p>No cards found.</p>
+      {% endfor %}
+    </div>
+  </article>
+</main>
+{% endblock %} {% block extra_scripts %}
+<script>
+  const modeRadios = document.querySelectorAll('input[name="mode"]');
+  const pokeSection = document.getElementById("pokemon-options");
+  const trainerSection = document.getElementById("trainer-options");
+
+  function updateVisibility() {
+    const selected = document.querySelector('input[name="mode"]:checked');
+    if (!selected) return;
+    if (selected.value === "pokemon") {
+      pokeSection.style.display = "block";
+      trainerSection.style.display = "none";
+    } else if (selected.value === "trainer") {
+      pokeSection.style.display = "none";
+      trainerSection.style.display = "block";
+    }
+  }
+
+  modeRadios.forEach((r) => r.addEventListener("change", updateVisibility));
+  window.addEventListener("load", updateVisibility);
+</script>
+{% endblock %}

@@ -1,0 +1,49 @@
+<!-- project/templates/project/base.html
+    File: base.html
+    Author: Ethan Machleder (emach@bu.edu) April 14, 2025
+    Description: 
+-->
+
+{% load static %}
+
+<html>
+  <head>
+    <!-- Page title and stylesheet link -->
+    <title>PocketTraders</title>
+    <link rel="stylesheet" href="{% static 'project/css/styles.css' %}" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="{% url 'catalog' %}" />Catalog</li>
+
+          <li>
+            <form method="POST" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <input type="submit" value="Log Out" />
+              <input type="hidden" name="next" value="{% url 'login' %}" />
+            </form>
+          </li>
+
+          <li>
+            <a href="{% url 'profile' %}">
+              {% with request.user.pocketprofile_set.first as p %}
+              <!-- prettier ignore -->
+              {% if p.profile_image_url %}
+              <img
+                class="profile-image"
+                src="{{p.profile_image_url}}"
+                alt="{{p.profile_image_url}}"
+              />
+              {% else %} {{ request.user}} {% endif %} {% endwith %}
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Content block where individual pages will render their unique content -->
+    {% block content %} {% endblock %} {% block extra_scripts %} {% endblock %}
+  </body>
+</html>
