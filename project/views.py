@@ -45,18 +45,18 @@ class CardCatalogView(ListView):
 
         if form.is_valid():
             mode = form.cleaned_data.get('mode')
+            print("MODE",mode)
             poke_stages = form.cleaned_data.get('poke_stages')
             poke_types = form.cleaned_data.get('poke_types')
             trainer_types = form.cleaned_data.get('trainer_types')
 
-            if mode == 'pokemon':
+            if 'pokemon' in mode:
                 if poke_stages:
-                    print(poke_stages)
                     queryset = queryset.filter(card_type__in=poke_stages)
                 if poke_types:
                     queryset = queryset.filter(poke_type__in=poke_types)
 
-            elif mode == 'trainer':
+            if 'trainer' in mode:
                 if trainer_types:
                     queryset = queryset.filter(card_type__in=trainer_types)
 

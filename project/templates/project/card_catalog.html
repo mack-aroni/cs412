@@ -5,36 +5,39 @@
 -->
 
 {% extends 'project/base.html' %} {% block content %}
-<h1>Card Catalog</h1>
 
-<form method="get">
-  <fieldset>
-    <legend>Filter by Card Category</legend>
-    {{ form.mode }}
-  </fieldset>
+<div class="container">
+  <h2>Card Catalog</h2>
 
-  <div id="pokemon-options" style="display: none">
+  <form method="get">
     <fieldset>
-      <legend>Pokemon Stages</legend>
-      {{ form.poke_stages }}
+      <legend>Filter by Card Category</legend>
+      {{ form.mode }}
     </fieldset>
-    <fieldset>
-      <legend>Pokemon Types</legend>
-      {{ form.poke_types }}
-    </fieldset>
-  </div>
 
-  <div id="trainer-options" style="display: none">
-    <fieldset>
-      <legend>Trainer Types</legend>
-      {{ form.trainer_types }}
-    </fieldset>
-  </div>
+    <div id="pokemon-options" style="display: none">
+      <fieldset>
+        <legend>Pokemon Stages</legend>
+        {{ form.poke_stages }}
+      </fieldset>
+      <fieldset>
+        <legend>Pokemon Types</legend>
+        {{ form.poke_types }}
+      </fieldset>
+    </div>
 
-  <button type="submit">Apply Filters</button>
-</form>
+    <div id="trainer-options" style="display: none">
+      <fieldset>
+        <legend>Trainer Types</legend>
+        {{ form.trainer_types }}
+      </fieldset>
+    </div>
 
-<h3>{{ result_count }} cards found</h3>
+    <button type="submit">Apply Filters</button>
+  </form>
+
+  <h3>{{ result_count }} cards found</h3>
+</div>
 
 <main class="grid-container">
   <article>
@@ -45,33 +48,83 @@
           class="card-image"
           src="{{ c.card_image_url }}"
           alt="{{ c.card_image_url }}"
+          onclick="openModal('{{ c.card_image_url }}')"
         />
       </div>
       {% empty %}
       <p>No cards found.</p>
       {% endfor %}
     </div>
+
+    <div id="cardModal" class="modal">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <img class="modal-content" id="modalImg" />
+    </div>
   </article>
 </main>
 {% endblock %} {% block extra_scripts %}
 <script>
-  const modeRadios = document.querySelectorAll('input[name="mode"]');
+  // FILTER FORM
+
+  const modeCheckboxes = document.querySelectorAll('input[name="mode"]');
   const pokeSection = document.getElementById("pokemon-options");
   const trainerSection = document.getElementById("trainer-options");
 
+  function uncheckChildren(container) {
+    const inputs = container.querySelectorAll('input[type="checkbox"]');
+    inputs.forEach((input) => (input.checked = false));
+  }
+
   function updateVisibility() {
-    const selected = document.querySelector('input[name="mode"]:checked');
-    if (!selected) return;
-    if (selected.value === "pokemon") {
+    let selectedModes = Array.from(modeCheckboxes)
+      .filter((cb) => cb.checked)
+      .map((cb) => cb.value);
+
+    if (selectedModes.includes("pokemon")) {
       pokeSection.style.display = "block";
-      trainerSection.style.display = "none";
-    } else if (selected.value === "trainer") {
+    } else {
       pokeSection.style.display = "none";
+      uncheckChildren(pokeSection);
+    }
+
+    if (selectedModes.includes("trainer")) {
       trainerSection.style.display = "block";
+    } else {
+      trainerSection.style.display = "none";
+      uncheckChildren(trainerSection);
     }
   }
 
-  modeRadios.forEach((r) => r.addEventListener("change", updateVisibility));
+  modeCheckboxes.forEach((cb) =>
+    cb.addEventListener("change", updateVisibility)
+  );
   window.addEventListener("load", updateVisibility);
+
+  // MODAL
+
+  function openModal(imageUrl) {
+    const modal = document.getElementById("cardModal");
+    const modalImg = document.getElementById("modalImg");
+
+    modal.style.display = "flex";
+    modalImg.src = imageUrl;
+  }
+
+  function closeModal() {
+    document.getElementById("cardModal").style.display = "none";
+  }
+
+  window.addEventListener("click", function (e) {
+    const modal = document.getElementById("cardModal");
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
+
+  window.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      closeModal();
+    }
+  });
 </script>
 {% endblock %}

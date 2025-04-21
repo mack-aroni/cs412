@@ -1,14 +1,97 @@
 body {
-  margin: 30px;
-  background: #d1dedd;
+  margin: 0;
   font-family: "Monaco", monospace;
+  background: #d1dedd;
 }
 
-.profile-image {
-  width: 75px;
-  height: 75px;
+.container {
+  width: 80%;
+  justify-self: center;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #c81515;
+  color: #fff;
+  border-color: black;
+}
+
+.navbar-logo img {
+  height: 80px;
+}
+
+.navbar-links {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.navbar-links ul {
+  display: flex;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-links li {
+  margin: 0 15px;
+}
+
+.navbar-button {
+  padding: 10px 15px;
+  text-decoration: none;
+  background-color: #f44336;
+  color: white;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.navbar-button:hover, .logout-button:hover  {
+  background-color: #fe8080;
+}
+
+.navbar-profile {
+  display: flex;
+  align-items: center;
+}
+
+.logout-form {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin-right: 20px;
+}
+
+.logout-button {
+  padding: 10px 15px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.profile-link img {
+  width: 60px;
+  height: 60px;
   object-fit: cover;
   border-radius: 50%;
+  border: 2px solid #fff;
+  cursor: pointer;
+}
+
+.profile-link:hover img {
+  border-color: #f44336; 
+}
+
+.card-grid {
+  width: 80%;
+  display: grid;
+  justify-self: center;
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
 }
 
 .card-image {
@@ -19,9 +102,32 @@ body {
   margin-bottom: 15px;
 }
 
-.card-grid {
-  width: 80%;
-  display: grid;
-  justify-self: center;
-  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.9);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+
+.close {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
 }

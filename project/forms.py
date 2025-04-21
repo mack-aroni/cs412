@@ -11,9 +11,9 @@ class FilterCardForm(forms.Form):
         ('trainer', 'Trainer'),
     ]
 
-    mode = forms.ChoiceField(
+    mode = forms.MultipleChoiceField(
         choices=MODE_CHOICES,
-        widget=forms.RadioSelect,
+        widget=forms.CheckboxSelectMultiple,
         required=False,
         label="Card Category"
     )

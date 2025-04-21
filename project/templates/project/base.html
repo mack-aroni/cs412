@@ -8,38 +8,51 @@
 
 <html>
   <head>
-    <!-- Page title and stylesheet link -->
     <title>PocketTraders</title>
     <link rel="stylesheet" href="{% static 'project/css/styles.css' %}" />
   </head>
   <body>
     <header>
-      <nav>
-        <ul>
-          <li><a href="{% url 'catalog' %}" />Catalog</li>
+      <nav class="navbar">
+        <div class="navbar-logo">
+          <img
+            src="{% static 'project/logo.webp' %}"
+            alt="PocketTraders Logo"
+          />
+        </div>
 
-          <li>
-            <form method="POST" action="{% url 'logout' %}">
-              {% csrf_token %}
-              <input type="submit" value="Log Out" />
-              <input type="hidden" name="next" value="{% url 'login' %}" />
-            </form>
-          </li>
+        <div class="navbar-links">
+          <ul>
+            <li>
+              <a href="{% url 'catalog' %}" class="navbar-button">Catalog</a>
+            </li>
+            <li>
+              <a href="{% url 'catalog' %}" class="navbar-button">Catalog</a>
+            </li>
+            <li>
+              <a href="{% url 'catalog' %}" class="navbar-button">Catalog</a>
+            </li>
+          </ul>
+        </div>
 
-          <li>
-            <a href="{% url 'profile' %}">
-              {% with request.user.pocketprofile_set.first as p %}
-              <!-- prettier ignore -->
-              {% if p.profile_image_url %}
-              <img
-                class="profile-image"
-                src="{{p.profile_image_url}}"
-                alt="{{p.profile_image_url}}"
-              />
-              {% else %} {{ request.user}} {% endif %} {% endwith %}
-            </a>
-          </li>
-        </ul>
+        <div class="navbar-profile">
+          <form method="POST" action="{% url 'logout' %}" class="logout-form">
+            {% csrf_token %}
+            <input type="submit" value="Log Out" class="logout-button" />
+            <input type="hidden" name="next" value="{% url 'login' %}" />
+          </form>
+          <a href="{% url 'profile' %}" class="profile-link">
+            {% with request.user.pocketprofile_set.first as p %}
+            <!-- prettier ignore -->
+            {% if p.profile_image_url %}
+            <img
+              class="profile-image"
+              src="{{p.profile_image_url}}"
+              alt="{{p.profile_image_url}}"
+            />
+            {% else %} {{ request.user }} {% endif %} {% endwith %}
+          </a>
+        </div>
       </nav>
     </header>
 
