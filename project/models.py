@@ -28,8 +28,10 @@ class Card(models.Model):
 
     uid = models.TextField(blank=False,default="")
     pack = models.TextField(blank=False, default="")
+    booster = models.TextField(blank=False)
 
     name = models.TextField(blank=False, default="")
+    rarity = models.TextField(blank=False)
     poke_type = models.TextField(blank=False)
     card_type = models.TextField(blank=False)
     card_image_url = models.URLField(blank=False)

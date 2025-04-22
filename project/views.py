@@ -15,8 +15,6 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login
 
-# Create your views here.
-
 class LoginOrProfileView(View):
     def get(self, request):
         if request.user.is_authenticated:
@@ -33,33 +31,52 @@ class TempHome(LoginRequiredMixin, ListView):
         '''return the URL required for login'''
         return reverse('login')
 
-class CardCatalogView(ListView):
-    model = Card
+class CardCatalogView(LoginRequiredMixin, ListView):
+    model = OwnedBy
     template_name = 'project/card_catalog.html'
-    context_object_name = 'card_list'
+    context_object_name = 'cards'
+
+    def get_profile(self):
+        return PocketProfile.objects.get(user=self.request.user)
+
+    def get_login_url(self):
+        '''return the URL required for login'''
+        return reverse('login')
 
     def get_queryset(self):
         '''Apply filters based on form fields.'''
-        queryset = Card.objects.all()
+        
+        queryset = OwnedBy.objects.filter(profile=self.get_profile())
         form = FilterCardForm(self.request.GET)
 
         if form.is_valid():
             mode = form.cleaned_data.get('mode')
-            print("MODE",mode)
             poke_stages = form.cleaned_data.get('poke_stages')
             poke_types = form.cleaned_data.get('poke_types')
             trainer_types = form.cleaned_data.get('trainer_types')
+            search_name = form.cleaned_data.get('search_name', '').strip()
+            boosters = form.cleaned_data.get('boosters')
+            rarity = form.cleaned_data.get('rarities')
+
+            if search_name:
+                queryset = queryset.filter(card__name__icontains=search_name)
+
+            if  boosters:
+                queryset = queryset.filter(card__booster__in=boosters)
+
+            if rarity:
+                queryset = queryset.filter(card__rarity__in=rarity)
 
             if 'pokemon' in mode:
                 if poke_stages:
-                    queryset = queryset.filter(card_type__in=poke_stages)
+                    queryset = queryset.filter(card__card_type__in=poke_stages)
                 if poke_types:
-                    queryset = queryset.filter(poke_type__in=poke_types)
+                    queryset = queryset.filter(card__poke_type__in=poke_types)
 
             if 'trainer' in mode:
                 if trainer_types:
-                    queryset = queryset.filter(card_type__in=trainer_types)
-
+                    queryset = queryset.filter(card__card_type__in=trainer_types)
+        
         return queryset
 
     def get_context_data(self, **kwargs):

@@ -11,6 +11,27 @@ class FilterCardForm(forms.Form):
         ('trainer', 'Trainer'),
     ]
 
+    search_name = forms.CharField(
+        required=False,
+        max_length=20,
+        widget=forms.TextInput(attrs={'placeholder': 'Search by Card Name...'}),
+        label="Card Name"
+    )
+
+    boosters = forms.MultipleChoiceField(
+        choices=[('Pikachu', 'Pikachu'), ('Mewtwo', 'Mewtwo'), ('Charizard', 'Charizard'), ('Shared', 'Shared')],
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label="Booster"
+    )
+
+    rarities = forms.MultipleChoiceField(
+        choices=[('◊','◊'), ('◊◊','◊◊'), ('◊◊◊','◊◊◊'), ('☆','☆'), ('☆☆','☆☆'), ('☆☆☆','☆☆☆'), ("Crown Rare", "Crown Rare")],
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label="Rarity"
+    )
+
     mode = forms.MultipleChoiceField(
         choices=MODE_CHOICES,
         widget=forms.CheckboxSelectMultiple,

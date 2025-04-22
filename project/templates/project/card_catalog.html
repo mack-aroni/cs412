@@ -11,6 +11,21 @@
 
   <form method="get">
     <fieldset>
+      <legend>Search</legend>
+      {{ form.search_name }}
+    </fieldset>
+
+    <fieldset>
+      <legend>Booster</legend>
+      {{ form.boosters }}
+    </fieldset>
+
+    <fieldset>
+      <legend>Rarity</legend>
+      {{ form.rarities }}
+    </fieldset>
+
+    <fieldset>
       <legend>Filter by Card Category</legend>
       {{ form.mode }}
     </fieldset>
@@ -42,14 +57,15 @@
 <main class="grid-container">
   <article>
     <div class="card-grid">
-      {% for c in card_list %}
-      <div>
+      {% for owned in cards %}
+      <div class="card-item">
         <img
           class="card-image"
-          src="{{ c.card_image_url }}"
-          alt="{{ c.card_image_url }}"
-          onclick="openModal('{{ c.card_image_url }}')"
+          src="{{ owned.card.card_image_url }}"
+          alt="{{ owned.card.name }}"
+          onclick="openModal('{{ owned.card.card_image_url }}')"
         />
+        <span class="card-count">{{ owned.count }}</span>
       </div>
       {% empty %}
       <p>No cards found.</p>

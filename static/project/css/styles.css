@@ -4,10 +4,14 @@ body {
   background: #d1dedd;
 }
 
+/* GENERAL CONTAINER */
+
 .container {
   width: 80%;
   justify-self: center;
 }
+
+/* NAVBAR STYLING */
 
 .navbar {
   display: flex;
@@ -87,6 +91,8 @@ body {
   border-color: #f44336; 
 }
 
+/* CATALOG CARD GRID */
+
 .card-grid {
   width: 80%;
   display: grid;
@@ -99,8 +105,32 @@ body {
   height: 256px;
   object-fit: cover;
   border-radius: 8px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
+
+.card-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  padding: 0.2rem;
+  border: 2px solid #aaa;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+
+.card-count {
+  width: 100%;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  border: 2px solid #aaa;
+  border-radius: 8px;
+}
+
+/* CARD MODAL */
 
 .modal {
   display: none;
@@ -130,4 +160,46 @@ body {
   font-size: 40px;
   font-weight: bold;
   cursor: pointer;
+}
+
+/* PROFILE IMAGE */
+
+.profile-image {
+  width: 75px;
+  height: 75px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* CATALOG FORM */
+
+form {
+  font-family: "Monaco", monospace;
+}
+
+form fieldset {
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 6px;
+}
+
+form fieldset legend {
+  font-weight: bold;
+  padding: 0 0.2rem;
+}
+
+form fieldset div {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(33%, 1fr));
+  gap: 0.2rem;
+}
+
+form fieldset div div {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
 }
