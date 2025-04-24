@@ -26,7 +26,7 @@ class FilterCardForm(forms.Form):
     )
 
     rarities = forms.MultipleChoiceField(
-        choices=[('◊','◊'), ('◊◊','◊◊'), ('◊◊◊','◊◊◊'), ('☆','☆'), ('☆☆','☆☆'), ('☆☆☆','☆☆☆'), ("Crown Rare", "Crown Rare")],
+        choices=[('◊','◊'), ('◊◊','◊◊'), ('◊◊◊','◊◊◊'), ('☆','☆'), ('☆☆','☆☆'), ('☆☆☆','☆☆☆'), ("♕", "♕")],
         widget=forms.CheckboxSelectMultiple,
         required=False,
         label="Rarity"
@@ -59,3 +59,8 @@ class FilterCardForm(forms.Form):
         required=False,
         label="Trainer Types"
     )
+
+class PackSelectForm(forms.Form):
+    PACK_CHOICES = [(c.strip(), c.strip()) for c in Card.objects.exclude(booster='Shared').values_list('booster', flat=True).distinct()]
+    
+    pack_type = forms.ChoiceField(choices=PACK_CHOICES, widget=forms.RadioSelect, required=False)

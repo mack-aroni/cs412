@@ -2,12 +2,14 @@
 # Author: Ethan Macheder (emach@bu.edu) April 15, 2025
 # Description: 
 
+import random
+
 from .models import *
 from .forms import *
-from django.views.generic import View, ListView, DetailView, CreateView
+from django.views.generic import View, ListView, FormView, DetailView, CreateView
 from django.views.generic.edit import UpdateView, DeleteView
 
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 
 from django.contrib.auth.mixins import LoginRequiredMixin 
@@ -85,3 +87,42 @@ class CardCatalogView(LoginRequiredMixin, ListView):
         context["form"] = FilterCardForm(self.request.GET)
         context["result_count"] = self.get_queryset().count()
         return context
+
+def weighted_random_choice(choices):
+    values, weights = zip(*choices)
+    return random.choices(values, weights=weights, k=1)[0]
+
+class PackSelectView(LoginRequiredMixin, FormView):
+    form_class = PackSelectForm
+    template_name = 'project/pack_select.html'
+
+    def form_valid(self, form):
+        form = PackSelectForm(self.request.POST)
+        if form.is_valid():
+            selected_pack = [form.cleaned_data['pack_type'], 'Shared']
+            print(f"User selected pack: {selected_pack}")
+
+            # RARITY_SLOT_4 = [('☆', 2.57), ('☆☆', 0.5), ('☆☆☆', 0.222), ('♕', 0.04)]
+            # RARITY_SLOT_5 = [('☆', 10.0), ('☆☆', 2.0), ('☆☆☆', 0.88), ('♕', 0.16)]
+
+            # commons = ['◊', '◊◊', '◊◊◊']
+            # options = list(Card.objects.filter(booster__in=selected_pack, rarity__in=commons))
+            # chosen_commons = random.sample(options, 3)
+
+            # rare_4 = weighted_random_choice(RARITY_SLOT_4)
+            # rare_4_card = Card.objects.filter(booster__in=selected_pack, rarity=rare_4).order_by('?').first()
+
+            # rare_5 = weighted_random_choice(RARITY_SLOT_5)
+            # rare_5_card = Card.objects.filter(booster__in=selected_pack, rarity=rare_5).order_by('?').first()
+            # opened_cards = chosen_commons + [rare_4_card, rare_5_card]
+
+            options = list(Card.objects.filter(booster__in=selected_pack).order_by('?'))
+            opened_cards = random.sample(options, 5)
+
+            print(opened_cards)
+            return render(self.request, 'project/pack_opened.html', {
+                'cards': opened_cards,
+                'pack_name': selected_pack[0],
+            })
+
+        return redirect('packs')

@@ -65,6 +65,9 @@ class Command(BaseCommand):
                     text3 = [i.strip() for i in text3]
 
                     rarity = text3[1]
+                    if rarity == "Crown Rare":
+                        rarity = "♕"
+
                     if len(text3) < 3:
                         booster = "Shared"
                     else:

@@ -24,7 +24,8 @@ body {
 }
 
 .navbar-logo img {
-  height: 80px;
+  /* height: 80px; */
+  height: 5rem;
 }
 
 .navbar-links {
@@ -45,7 +46,8 @@ body {
 }
 
 .navbar-button {
-  padding: 10px 15px;
+  /* padding: 10px 15px; */
+  padding: 1rem 1.5rem;
   text-decoration: none;
   background-color: #f44336;
   color: white;
@@ -53,7 +55,7 @@ body {
   transition: background-color 0.3s;
 }
 
-.navbar-button:hover, .logout-button:hover  {
+.navbar-button:hover, .logout-button:hover {
   background-color: #fe8080;
 }
 
@@ -67,20 +69,26 @@ body {
   align-items: center;
   padding: 0;
   margin-right: 20px;
+  font-size: 1rem;
+  font-family: "Monaco", monospace;
 }
 
 .logout-button {
-  padding: 10px 15px;
+  padding: 1rem 1.5rem;
   background-color: #f44336;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  align-self: center;
+  justify-self: center;
 }
 
 .profile-link img {
-  width: 60px;
-  height: 60px;
+  /* width: 60px; */
+  /* height: 60px; */
+  width: 4rem;
+  height: 4rem;
   object-fit: cover;
   border-radius: 50%;
   border: 2px solid #fff;
@@ -173,8 +181,10 @@ body {
 
 /* CATALOG FORM */
 
-form {
+.catalog-form {
   font-family: "Monaco", monospace;
+  background: #edf2f1;
+  padding: 1rem;
 }
 
 form fieldset {
@@ -202,4 +212,63 @@ form fieldset div div {
   display: flex;
   align-items: center;
   gap: 0.2rem;
+}
+
+/* PACK SELECT */
+
+.pack-selection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.pack-radio {
+  display: none;
+}
+
+.pack-label {
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 0.5rem;
+  transition: border-color 0.2s, transform 0.2s;
+  text-align: center;
+}
+
+.pack-label img {
+  width: 170px;
+  height: 300px;
+  object-fit: scale-down;
+  display: block;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+}
+
+.pack-radio:checked + .pack-label {
+  border-color: #f44336; 
+  transform: scale(1.1);
+  background-color: #f0fdfa;
+}
+
+.pack-name {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.open-button {
+  padding: 1rem 1.5rem;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: "Monaco", monospace;
+  display: block;
+  margin: 2rem auto 0 auto;
+}
+
+.open-button:hover {
+  background-color: #fe8080;
 }

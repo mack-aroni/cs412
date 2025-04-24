@@ -6,3 +6,4 @@ from .models import *
 admin.site.register(PocketProfile)
 admin.site.register(Card)
 admin.site.register(OwnedBy)
+admin.site.register(PocketFriend)

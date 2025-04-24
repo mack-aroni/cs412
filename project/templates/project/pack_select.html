@@ -1,0 +1,33 @@
+<!-- project/templates/project/pack_select.html
+    File: pack_select.html
+    Author: Ethan Machleder (emach@bu.edu) April 24, 2025
+    Description: 
+-->
+
+{% extends 'project/base.html' %} {% load static %} {% block content %}
+
+<form method="post">
+  {% csrf_token %}
+  <div class="pack-selection">
+    {% for value, label in form.fields.pack_type.choices %}
+    <input
+      type="radio"
+      name="pack_type"
+      id="pack-{{ forloop.counter }}"
+      value="{{ value }}"
+      class="pack-radio"
+    />
+    <label for="pack-{{ forloop.counter }}" class="pack-label">
+      <img
+        src="{% static 'project/'|add:label|lower|add:'_pack.webp' %}"
+        alt="{{ label }}"
+      />
+      <div class="pack-name">{{ label }}</div>
+    </label>
+    {% endfor %}
+  </div>
+
+  <button type="submit" class="open-button">Open Pack</button>
+</form>
+
+{% endblock %}

@@ -1,0 +1,24 @@
+<!-- project/templates/project/pack_select.html
+    File: pack_opened.html
+    Author: Ethan Machleder (emach@bu.edu) April 24, 2025
+    Description: 
+-->
+
+{% extends 'project/base.html' %} {% load static %} {% block content %}
+<h2>You opened a {{ pack_name }} pack!</h2>
+
+<div class="card-grid">
+  {% for card in cards %}
+  <div class="card-item">
+    <img
+      src="{{ card.card_image_url }}"
+      class="card-image"
+      alt="{{ card.name }}"
+    />
+    <div>{{ card.name }} — {{ card.rarity }}</div>
+  </div>
+  {% endfor %}
+</div>
+
+<a href="{% url 'packs' %}" class="navbar-button">Open Another</a>
+{% endblock %}
