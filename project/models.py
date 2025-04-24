@@ -26,7 +26,7 @@ class PocketProfile(models.Model):
 class Card(models.Model):
     '''Encapsulate the idea of a Card'''
 
-    uid = models.TextField(blank=False,default="")
+    cid = models.TextField(blank=False,default="")
     pack = models.TextField(blank=False, default="")
     booster = models.TextField(blank=False)
 
@@ -38,7 +38,7 @@ class Card(models.Model):
 
     def __str__(self):
         '''Return a string representation of this Card object'''
-        return f'{self.uid}|{self.pack}|{self.name}'
+        return f'{self.pack}|{self.cid}|{self.name}'
 
 class OwnedBy(models.Model):
     '''Encapsulate the relation between a PocketProfile owning a Card'''

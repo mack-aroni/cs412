@@ -5,7 +5,7 @@
 -->
 
 {% extends 'project/base.html' %} {% load static %} {% block content %}
-<h2>You opened a {{ pack_name }} pack!</h2>
+<h2 class="card-opened-header">You opened a {{ pack_name }} pack!</h2>
 
 <div class="card-grid">
   {% for card in cards %}
@@ -20,5 +20,7 @@
   {% endfor %}
 </div>
 
-<a href="{% url 'packs' %}" class="navbar-button">Open Another</a>
+<div class="container">
+  <a href="{% url 'packs' %}" class="open-button">Open Another</a>
+</div>
 {% endblock %}

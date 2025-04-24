@@ -76,7 +76,7 @@ class Command(BaseCommand):
                     # print(f'A1-{x}, {name}, {poke_type}, {card_type}, {rarity}, {booster}')
 
                     new_card = Card(
-                    uid=f'A1-{x}',
+                    cid=f'{num}',
                     pack='Genetic Apex',
                     booster=booster,
                     rarity=rarity,
@@ -86,7 +86,7 @@ class Command(BaseCommand):
                     card_image_url=f'https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket/A1/A1_{num}_EN.webp')
                     
                     new_card.save()
-                    print(f'Created New Card: A1-{x}, {name}, {poke_type}, {card_type}, {rarity}, {booster}')
+                    print(f'Created New Card: {num}, {name}, {poke_type}, {card_type}, {rarity}, {booster}')
 
                     new_rel = OwnedBy(profile=p, card=new_card)
                     new_rel.save()

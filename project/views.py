@@ -78,7 +78,8 @@ class CardCatalogView(LoginRequiredMixin, ListView):
             if 'trainer' in mode:
                 if trainer_types:
                     queryset = queryset.filter(card__card_type__in=trainer_types)
-        
+
+        queryset = queryset.order_by('card__cid')
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -88,13 +89,12 @@ class CardCatalogView(LoginRequiredMixin, ListView):
         context["result_count"] = self.get_queryset().count()
         return context
 
-def weighted_random_choice(choices):
-    values, weights = zip(*choices)
-    return random.choices(values, weights=weights, k=1)[0]
-
 class PackSelectView(LoginRequiredMixin, FormView):
     form_class = PackSelectForm
     template_name = 'project/pack_select.html'
+
+    def get_profile(self):
+        return PocketProfile.objects.get(user=self.request.user)
 
     def form_valid(self, form):
         form = PackSelectForm(self.request.POST)
@@ -119,7 +119,16 @@ class PackSelectView(LoginRequiredMixin, FormView):
             options = list(Card.objects.filter(booster__in=selected_pack).order_by('?'))
             opened_cards = random.sample(options, 5)
 
-            print(opened_cards)
+            RARITY_ORDER = {'♕': 8,'☆☆☆': 7,'☆☆': 6,'☆': 5,'◊◊◊◊': 4,'◊◊◊': 3,'◊◊': 2,'◊': 1,}            
+            opened_cards = sorted(opened_cards, key=lambda card: RARITY_ORDER.get(card.rarity, 0))
+
+            profile = self.get_profile()
+            for c in opened_cards:
+                relation, created = OwnedBy.objects.get_or_create(profile=profile, card=c)
+                if not created:
+                    relation.count += 1
+                relation.save()
+
             return render(self.request, 'project/pack_opened.html', {
                 'cards': opened_cards,
                 'pack_name': selected_pack[0],

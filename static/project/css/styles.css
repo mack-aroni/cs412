@@ -214,7 +214,7 @@ form fieldset div div {
   gap: 0.2rem;
 }
 
-/* PACK SELECT */
+/* PACK SELECT + PACK OPENED */
 
 .pack-selection {
   display: flex;
@@ -265,10 +265,15 @@ form fieldset div div {
   border-radius: 5px;
   cursor: pointer;
   font-family: "Monaco", monospace;
+  text-align: center;
   display: block;
   margin: 2rem auto 0 auto;
 }
 
 .open-button:hover {
   background-color: #fe8080;
+}
+
+.card-opened-header {
+  text-align: center;
 }
