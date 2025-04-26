@@ -277,3 +277,19 @@ form fieldset div div {
 .card-opened-header {
   text-align: center;
 }
+
+/* REGISTER FORM */
+.register-table {
+  text-align: left;
+  padding: 0.5rem;
+}
+
+.register-table th {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.register-table span {
+  font-size: 0.9rem;
+}

@@ -23,6 +23,32 @@ class LoginOrProfileView(View):
             return redirect('profile')
         return redirect('login')
 
+class CreatePocketProfile(CreateView):
+    form_class = CreatePocketProfileForm  # The form class to use for profile creation
+    template_name = "project/register.html"  # Template for creating a new profile
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if 'user_form' not in context:
+            context['user_form'] = UserCreationForm()  # Add UserCreationForm to context
+        return context
+
+    def form_valid(self, form):
+        user_form = UserCreationForm(self.request.POST)  # Reconstruct user form
+
+        if user_form.is_valid():  
+            user = user_form.save()  # Save new User
+            login(self.request, user)  # Log in new User
+            form.instance.user = user  # Assign User to Profile
+            return super().form_valid(form)  # Save Profile
+
+        # If user_form is invalid, re-render page with errors
+        return self.render_to_response(self.get_context_data(form=form, user_form=user_form))
+
+    def get_success_url(self):
+        """Redirect to the user's profile page after successful profile creation."""
+        return reverse('profile')
+
 class TempHome(LoginRequiredMixin, ListView):
     '''TEMP VIEW'''
     model = PocketProfile
@@ -102,20 +128,6 @@ class PackSelectView(LoginRequiredMixin, FormView):
             selected_pack = [form.cleaned_data['pack_type'], 'Shared']
             print(f"User selected pack: {selected_pack}")
 
-            # RARITY_SLOT_4 = [('☆', 2.57), ('☆☆', 0.5), ('☆☆☆', 0.222), ('♕', 0.04)]
-            # RARITY_SLOT_5 = [('☆', 10.0), ('☆☆', 2.0), ('☆☆☆', 0.88), ('♕', 0.16)]
-
-            # commons = ['◊', '◊◊', '◊◊◊']
-            # options = list(Card.objects.filter(booster__in=selected_pack, rarity__in=commons))
-            # chosen_commons = random.sample(options, 3)
-
-            # rare_4 = weighted_random_choice(RARITY_SLOT_4)
-            # rare_4_card = Card.objects.filter(booster__in=selected_pack, rarity=rare_4).order_by('?').first()
-
-            # rare_5 = weighted_random_choice(RARITY_SLOT_5)
-            # rare_5_card = Card.objects.filter(booster__in=selected_pack, rarity=rare_5).order_by('?').first()
-            # opened_cards = chosen_commons + [rare_4_card, rare_5_card]
-
             options = list(Card.objects.filter(booster__in=selected_pack).order_by('?'))
             opened_cards = random.sample(options, 5)
 
@@ -135,3 +147,4 @@ class PackSelectView(LoginRequiredMixin, FormView):
             })
 
         return redirect('packs')
+

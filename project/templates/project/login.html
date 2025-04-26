@@ -1,5 +1,5 @@
 <!-- project/templates/project/login.html
-    File: base.html
+    File: login.html
     Author: Ethan Machleder (emach@bu.edu) April 14, 2025
     Description: 
 -->
@@ -16,17 +16,31 @@
       <nav></nav>
     </header>
 
-    <h1>Login</h1>
+    <div class="container">
+      <br />
+      <h1>PocketTraders Login</h1>
 
-    <form method="POST" action="{% url 'login' %}">
-      {% csrf_token %} {{ form }}
-      <input type="submit" value="Login" />
+      <form method="POST" class="catalog-form" action="{% url 'login' %}">
+        {% csrf_token %}
+        <fieldset>
+          <legend>Username</legend>
+          {{ form.username }}
+        </fieldset>
 
-      {% if request.GET.next %}
-      <input type="hidden" name="next" value="{{ request.GET.next }}" />
-      {% else %}
-      <input type="hidden" name="next" value="{% url 'profile' %}" />
-      {% endif %}
-    </form>
+        <fieldset>
+          <legend>Password</legend>
+          {{ form.password }}
+        </fieldset>
+
+        <input type="submit" value="Login" />
+        <a href="{% url 'register' %}">Register</a>
+
+        {% if request.GET.next %}
+        <input type="hidden" name="next" value="{{ request.GET.next }}" />
+        {% else %}
+        <input type="hidden" name="next" value="{% url 'profile' %}" />
+        {% endif %}
+      </form>
+    </div>
   </body>
 </html>

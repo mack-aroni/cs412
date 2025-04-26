@@ -13,6 +13,7 @@ urlpatterns = [
     path('catalog/', CardCatalogView.as_view(), name='catalog'),
     path('packs/', PackSelectView.as_view(), name='packs'),
 
+    path('register/', CreatePocketProfile.as_view(), name='register'),
     path('login/', auth_views.LoginView.as_view(template_name='project/login.html'), name='login'),
 	path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]

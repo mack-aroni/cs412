@@ -64,3 +64,11 @@ class PackSelectForm(forms.Form):
     PACK_CHOICES = [(c.strip(), c.strip()) for c in Card.objects.exclude(booster='Shared').values_list('booster', flat=True).distinct()]
     
     pack_type = forms.ChoiceField(choices=PACK_CHOICES, widget=forms.RadioSelect, required=False)
+
+class CreatePocketProfileForm(forms.ModelForm):
+    '''A form to add an PocketProfile to the database.'''
+
+    class Meta:
+        '''associate this form with a model from our database.'''
+        model = PocketProfile
+        fields = ['profile_image_url']

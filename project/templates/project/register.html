@@ -1,0 +1,64 @@
+<!-- project/templates/project/register.html
+    File: register.html
+    Author: Ethan Machleder (emach@bu.edu) Aril 5, 2025
+    Description: This template displays the HTML form to create a new PocketProfile object.
+-->
+
+{% load static %}
+
+<html>
+  <head>
+    <title>PocketTraders</title>
+    <link rel="stylesheet" href="{% static 'project/css/styles.css' %}" />
+  </head>
+  <body>
+    <header>
+      <nav></nav>
+    </header>
+
+    <br />
+    <div class="container">
+      <h1>Create PocketProfile</h1>
+
+      <form
+        method="POST"
+        class="catalog-form"
+        action="{% url 'register' %}"
+      >
+        {% csrf_token %}
+
+        <table class="register-table">
+          <fieldset>
+            <legend>Username</legend>
+            {{ user_form.username }}
+          </br>
+            <span>{{ user_form.username.help_text }}</span>
+          </fieldset>
+
+          <fieldset>
+            <legend>Password</legend>
+            {{ user_form.password1 }}
+          </br>
+            <span>{{ user_form.password1.help_text }}</span>
+          </fieldset>
+
+          <fieldset>
+            <legend>Password Confirmation</legend>
+            {{ user_form.password2 }}
+          </br>
+            <span>{{ user_form.password2.help_text }}</span>
+          </fieldset>
+
+          <fieldset>
+            <legend>Profile Image URL</legend>
+            {{ form.profile_image_url }}
+          </fieldset>
+          {% comment %} {{user_form.as_table}} {{form.as_table}} {% endcomment %}
+        </table>
+
+        <input type="submit" value="Create" />
+        <a href="{% url 'login' %}">Login</a>
+      </form>
+    </div>
+  </body>
+</html>
