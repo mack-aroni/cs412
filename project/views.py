@@ -64,12 +64,12 @@ class CardCatalogView(LoginRequiredMixin, ListView):
     template_name = 'project/card_catalog.html'
     context_object_name = 'cards'
 
-    def get_profile(self):
-        return PocketProfile.objects.get(user=self.request.user)
-
     def get_login_url(self):
         '''return the URL required for login'''
         return reverse('login')
+
+    def get_profile(self):
+        return PocketProfile.objects.get(user=self.request.user)
 
     def get_queryset(self):
         '''Apply filters based on form fields.'''
@@ -119,6 +119,10 @@ class PackSelectView(LoginRequiredMixin, FormView):
     form_class = PackSelectForm
     template_name = 'project/pack_select.html'
 
+    def get_login_url(self):
+        '''return the URL required for login'''
+        return reverse('login')
+
     def get_profile(self):
         return PocketProfile.objects.get(user=self.request.user)
 
@@ -148,3 +152,42 @@ class PackSelectView(LoginRequiredMixin, FormView):
 
         return redirect('packs')
 
+class TradeHubView(LoginRequiredMixin, DetailView):
+    model = PocketProfile
+    template_name = 'project/trade_hub.html'
+    context_object_name = 'profile'
+
+    def get_login_url(self):
+        '''return the URL required for login'''
+        return reverse('login')
+
+class ShowPocketFriendSuggestionsView(LoginRequiredMixin, DetailView):
+    model = PocketProfile
+    template_name = 'project/friend_suggestions.html'
+    context_object_name = 'profile'
+
+    def get_login_url(self):
+        '''return the URL required for login'''
+        return reverse('login')
+
+    def get_object(self):
+        return PocketProfile.objects.get(user=self.request.user)
+
+class AddPocketFriendView(View):
+    def get_object(self):
+        return PocketProfile.objects.get(user=self.request.user)
+
+    def dispatch(self, request, friend_pk, *args, **kwargs):
+        if not request.user.is_authenticated:
+            # Redirect to the login page
+            return redirect('login')  
+
+        # Retrieve the profiles using their primary keys
+        profile1 = self.get_object()
+        profile2 = PocketProfile.objects.get(pk=friend_pk)
+
+        # Add profile2 as a friend to profile1
+        profile1.add_friend(profile2)
+
+        # Redirect to the profile page of profile1
+        return redirect('trade', pk=profile1.pk)

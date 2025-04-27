@@ -1,0 +1,37 @@
+<!-- project/templates/project/friend_suggestions.html
+    File: friend_suggestions.html
+    Author: Ethan Machleder (emach@bu.edu) April 27, 2025
+    Description: 
+-->
+
+{% extends 'project/base.html' %} {% block content %}
+
+<main class="container">
+  <h1>Potential Friends</h1>
+
+  <table>
+    {% for p in profile.get_friend_suggestions %}
+    <tr>
+      <td>
+        <div class="profile_icon">
+          {% if p.profile_image_url %}
+          <img
+            class="profile-image"
+            src="{{p.profile_image_url}}"
+            alt="{{p.profile_image_url}}"
+          />
+          {% endif %}
+        </div>
+      </td>
+
+      <td>
+        <h2>{{p.user}}</h2>
+      </td>
+      <td>
+        <a href="{% url 'add_friend' p.pk %}">Add Friend</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</main>
+{% endblock %}

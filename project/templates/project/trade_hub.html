@@ -1,0 +1,49 @@
+<!-- project/templates/project/trade_hub.html
+    File: trade_hubs.html
+    Author: Ethan Machleder (emach@bu.edu) April 27, 2025
+    Description: 
+-->
+
+{% extends 'project/base.html' %} {% load static %} {% block content %}
+
+<div class="container">
+  <h2>{{profile}}'s Friends</h2>
+  <hr />
+  <table>
+    {% for friend in profile.get_friends %}
+    <tr>
+      <table>
+        <tr>
+          <td>
+            <div class="profile_icon">
+              {% if friend.profile_image_url %}
+              <img
+                class="profile-image"
+                src="{{friend.profile_image_url}}"
+                alt="{{friend.profile_image_url}}"
+              />
+              {% endif %}
+            </div>
+          </td>
+
+          <td>
+            <h2>{{friend.user}}</h2>
+          </td>
+
+          <td>
+            <a href="{% url 'trade' profile.pk %}">Trade</a>
+          </td>
+        </tr>
+      </table>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <hr />
+
+  <div>
+    <a href="{% url 'friend_suggestions' %}">View Friend Suggestions</a>
+  </div>
+</div>
+
+{% endblock %}

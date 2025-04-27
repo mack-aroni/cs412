@@ -22,6 +22,34 @@ class PocketProfile(models.Model):
         card_images = [c.card.card_image_url for c in cards]
         return card_images
 
+    
+    def get_friends(self):
+        friends = PocketFriend.objects.filter(models.Q(profile1=self) | models.Q(profile2=self))
+
+        friend_profiles = [f.profile1 if f.profile2 == self else f.profile2 for f in friends]
+
+        return friend_profiles
+
+    def add_friend(self, other):
+        if self == other:
+            return
+        
+        existing_friendship = PocketFriend.objects.filter(
+            (models.Q(profile1=self, profile2=other) | models.Q(profile1=other, profile2=self))
+        ).exists()
+        
+        if not existing_friendship:
+            PocketFriend.objects.create(profile1=self, profile2=other)
+
+    def get_friend_suggestions(self):
+        friends = PocketFriend.objects.filter(models.Q(profile1=self) | models.Q(profile2=self))
+
+        friend_profiles = [f.profile1 if f.profile2 == self else f.profile2 for f in friends]
+
+        non_friends = PocketProfile.objects.exclude(id=self.id).exclude(id__in=[profile.id for profile in friend_profiles])
+
+        return non_friends
+
 
 class Card(models.Model):
     '''Encapsulate the idea of a Card'''
@@ -57,3 +85,18 @@ class PocketFriend(models.Model):
     profile1 = models.ForeignKey("PocketProfile", on_delete=models.CASCADE, related_name="profile1")
     profile2 = models.ForeignKey("PocketProfile", on_delete=models.CASCADE, related_name="profile2")
     timestamp = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'{self.profile1} is friends with {self.profile2}'
+    
+class TradeRequest(models.Model):
+    profile1 = models.ForeignKey("PocketProfile", on_delete=models.CASCADE, related_name="trade_sender")
+    profile2 = models.ForeignKey("PocketProfile", on_delete=models.CASCADE, related_name="trade_receiver")
+    timestamp = models.DateTimeField(auto_now=True)
+    card1 = models.ForeignKey("PocketProfile", on_delete=models.CASCADE, related_name="sender_card")
+    card2 = models.ForeignKey("PocketProfile", on_delete=models.CASCADE, related_name="receiver_card")
+    sender_accept = models.BooleanField(blank=True, default=False)
+    receiver_accept = models.BooleanField(blank=True, default=False)
+
+    def __str__(self):
+        pass

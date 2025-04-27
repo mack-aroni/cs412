@@ -12,6 +12,9 @@ urlpatterns = [
     path('profile/', TempHome.as_view(), name='profile'),
     path('catalog/', CardCatalogView.as_view(), name='catalog'),
     path('packs/', PackSelectView.as_view(), name='packs'),
+    path('trade/<int:pk>', TradeHubView.as_view(), name='trade'),
+    path('friend_suggestions/', ShowPocketFriendSuggestionsView.as_view(), name="friend_suggestions"),
+    path('addfriend/<int:friend_pk>', AddPocketFriendView.as_view(), name='add_friend'),
 
     path('register/', CreatePocketProfile.as_view(), name='register'),
     path('login/', auth_views.LoginView.as_view(template_name='project/login.html'), name='login'),
