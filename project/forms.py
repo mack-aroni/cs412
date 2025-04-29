@@ -66,9 +66,16 @@ class PackSelectForm(forms.Form):
     pack_type = forms.ChoiceField(choices=PACK_CHOICES, widget=forms.RadioSelect, required=False)
 
 class CreatePocketProfileForm(forms.ModelForm):
-    '''A form to add an PocketProfile to the database.'''
 
     class Meta:
-        '''associate this form with a model from our database.'''
         model = PocketProfile
         fields = ['profile_image_url']
+
+class TradeOptionsForm(forms.Form):
+
+    search_name = forms.CharField(
+        required=False,
+        max_length=20,
+        widget=forms.TextInput(attrs={'placeholder': 'Search by Card Name...'}),
+        label="Card Name"
+    )

@@ -22,12 +22,9 @@ class PocketProfile(models.Model):
         card_images = [c.card.card_image_url for c in cards]
         return card_images
 
-    
     def get_friends(self):
         friends = PocketFriend.objects.filter(models.Q(profile1=self) | models.Q(profile2=self))
-
         friend_profiles = [f.profile1 if f.profile2 == self else f.profile2 for f in friends]
-
         return friend_profiles
 
     def add_friend(self, other):
@@ -50,6 +47,10 @@ class PocketProfile(models.Model):
 
         return non_friends
 
+    def get_trades(self):
+        trades = TradeRequest.objects.filter(models.Q(profile1=self) | models.Q(profile2=self))
+        trades = trades.order_by('timestamp')
+        return trades
 
 class Card(models.Model):
     '''Encapsulate the idea of a Card'''
@@ -93,10 +94,17 @@ class TradeRequest(models.Model):
     profile1 = models.ForeignKey("PocketProfile", on_delete=models.CASCADE, related_name="trade_sender")
     profile2 = models.ForeignKey("PocketProfile", on_delete=models.CASCADE, related_name="trade_receiver")
     timestamp = models.DateTimeField(auto_now=True)
-    card1 = models.ForeignKey("PocketProfile", on_delete=models.CASCADE, related_name="sender_card")
-    card2 = models.ForeignKey("PocketProfile", on_delete=models.CASCADE, related_name="receiver_card")
-    sender_accept = models.BooleanField(blank=True, default=False)
-    receiver_accept = models.BooleanField(blank=True, default=False)
+    card1 = models.ForeignKey("OwnedBy", on_delete=models.CASCADE, related_name="sender_card")
+    card2 = models.ForeignKey(
+        "OwnedBy",
+        on_delete=models.CASCADE,
+        related_name="receiver_card",
+        null=True,
+        blank=True
+    )
+    send_acc = models.BooleanField(blank=True, default=False)
+    rcv_acc = models.BooleanField(blank=True, default=False)
+    canceled = models.BooleanField(blank=True, default=False)
 
     def __str__(self):
-        pass
+        return f"Trade from {self.profile1} to {self.profile2} (cards: {self.card1} -> {self.card2})"

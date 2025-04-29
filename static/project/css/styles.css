@@ -102,15 +102,17 @@ body {
 /* CATALOG CARD GRID */
 
 .card-grid {
-  width: 80%;
+  width: 100%;
   display: grid;
   justify-self: center;
-  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(185px, 200px));
+  gap: 1rem;
+  justify-content: center;
 }
 
 .card-image {
-  width: 183px;
-  height: 256px;
+  width: 100%;
+  height: auto;
   object-fit: cover;
   border-radius: 8px;
   margin-bottom: 10px;
@@ -120,13 +122,12 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 0.5rem;
-  padding: 0.2rem;
+  padding: 0.5rem;
   border: 2px solid #aaa;
   border-radius: 8px;
   background-color: #f9f9f9;
+  width: 183px;
 }
-
 
 .card-count {
   width: 100%;
@@ -292,4 +293,30 @@ form fieldset div div {
 
 .register-table span {
   font-size: 0.9rem;
+}
+
+/* TRADE HUB */
+.trade-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.trade-table th,
+.trade-table td {
+  width: 33%;
+  padding: 0.75rem;
+  vertical-align: middle;
+}
+
+.left-align {
+  text-align: left;
+}
+
+.right-align {
+  text-align: right;
 }

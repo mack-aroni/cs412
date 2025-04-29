@@ -1,0 +1,85 @@
+<!-- project/templates/project/create_trade.html
+    File: create_trade.html
+    Author: Ethan Machleder (emach@bu.edu) April 28, 2025
+    Description: 
+-->
+
+{% extends 'project/base.html' %} {% block content %}
+<div class="container">
+  <h2>Choose A Card to Trade</h2>
+
+  <form class="catalog-form" method="get">
+    <fieldset>
+      <legend>Search</legend>
+      {{ form.search_name }}
+    </fieldset>
+
+    <button type="submit">Apply Filter</button>
+  </form>
+
+  <h3>{{ result_count }} cards found</h3>
+</div>
+
+<main class="container">
+  <article>
+    <div class="card-grid">
+      {% for owned in cards %}
+      <div class="card-item">
+        <img
+          class="card-image"
+          src="{{ owned.card.card_image_url }}"
+          alt="{{ owned.card.name }}"
+          onclick="openModal('{{ owned.card.card_image_url }}')"
+        />
+        <span class="card-count">{{ owned.count }}</span>
+        <span class="card-count">
+          {% if type == 0 %}
+          <a href="{% url 'create_trade' sender_pk receiver_pk owned.pk %}"
+            >Trade</a
+          >
+          {% else %}
+          <a href="{% url 'accept_trade' trade_pk owned.pk %}">Trade</a>
+          {% endif %}
+        </span>
+      </div>
+      {% empty %}
+      <p>No cards found.</p>
+      {% endfor %}
+    </div>
+
+    <div id="cardModal" class="modal">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <img class="modal-content" id="modalImg" />
+    </div>
+  </article>
+</main>
+{% endblock %} {% block extra_scripts %}
+<script>
+  // MODAL
+
+  function openModal(imageUrl) {
+    const modal = document.getElementById("cardModal");
+    const modalImg = document.getElementById("modalImg");
+
+    modal.style.display = "flex";
+    modalImg.src = imageUrl;
+  }
+
+  function closeModal() {
+    document.getElementById("cardModal").style.display = "none";
+  }
+
+  window.addEventListener("click", function (e) {
+    const modal = document.getElementById("cardModal");
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
+
+  window.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      closeModal();
+    }
+  });
+</script>
+{% endblock %}

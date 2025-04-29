@@ -6,44 +6,123 @@
 
 {% extends 'project/base.html' %} {% load static %} {% block content %}
 
-<div class="container">
+<main class="container">
   <h2>{{profile}}'s Friends</h2>
   <hr />
   <table>
     {% for friend in profile.get_friends %}
     <tr>
-      <table>
-        <tr>
-          <td>
-            <div class="profile_icon">
-              {% if friend.profile_image_url %}
-              <img
-                class="profile-image"
-                src="{{friend.profile_image_url}}"
-                alt="{{friend.profile_image_url}}"
-              />
-              {% endif %}
-            </div>
-          </td>
+      <table class="trade-table">
+        <tbody>
+          <tr>
+            <td class="left-align">
+              <div class="profile_icon">
+                {% if friend.profile_image_url %}
+                <img
+                  class="profile-image"
+                  src="{{friend.profile_image_url}}"
+                  alt="{{friend.profile_image_url}}"
+                />
+                {% endif %}
+              </div>
+            </td>
 
-          <td>
-            <h2>{{friend.user}}</h2>
-          </td>
+            <td class="left-align">
+              <h2>{{friend.user}}</h2>
+            </td>
 
-          <td>
-            <a href="{% url 'trade' profile.pk %}">Trade</a>
-          </td>
-        </tr>
+            <td class="right-align">
+              <a href="{% url 'trade_options' 0 profile.pk friend.pk %}"
+                >Trade</a
+              >
+            </td>
+          </tr>
+        </tbody>
       </table>
     </tr>
     {% endfor %}
   </table>
-
-  <hr />
-
   <div>
     <a href="{% url 'friend_suggestions' %}">View Friend Suggestions</a>
   </div>
-</div>
+  <hr />
+
+  <h2>{{profile}}'s Trades</h2>
+  <hr />
+  <table>
+    {% for trade in profile.get_trades %}
+    <tr>
+      <table class="trade-table">
+        <thead>
+          <tr>
+            <th class="left-align">{{trade.profile1}} Sends</th>
+            <th class="left-align">{{trade.profile2}} Sends</th>
+            <th class="right-align">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="left-align">
+              {% if trade.card1 %}
+              <div class="profile_icon">
+                <img
+                  class="profile-image"
+                  src="{{trade.card1.card.card_image_url}}"
+                  alt="{{trade.card1.card.card_image_url}}"
+                />
+              </div>
+              {% else %}
+              <div class="profile_icon">
+                <img
+                  class="profile-image"
+                  src="{% static 'project/card_back.webp' %}"
+                  alt="card_back.webp"
+                />
+              </div>
+              {% endif %}
+            </td>
+
+            <td class="left-align">
+              {% if trade.card2 %}
+              <div class="profile_icon">
+                <img
+                  class="profile-image"
+                  src="{{trade.card2.card.card_image_url}}"
+                  alt="{{trade.card2.card.card_image_url}}"
+                />
+              </div>
+              {% else %}
+              <div class="profile_icon">
+                <img
+                  class="profile-image"
+                  src="{% static 'project/card_back.webp' %}"
+                  alt="card_back.webp"
+                />
+              </div>
+              {% endif %}
+            </td>
+
+            <td class="right-align">
+              {% if trade.cancelled %}
+              <p>Canceled</p>
+              {% elif trade.rcv_acc == True and trade.send_acc == True %}
+              <p>Completed</p>
+              {% elif trade.profile1 == profile and trade.rcv_acc == False %}
+              <p>Waiting</p>
+              {% elif trade.profile2 == profile and trade.send_acc == False %}
+              <p>Waiting</p>
+              {% elif trade.rcv_acc and trade.profile2 != profile %}
+              <a href="{% url 'trade_finalize' trade.pk %}">Accept Trade</a>
+              {% else %}
+              <a href="{% url 'trade_add' trade.pk %}">Manage Trade</a>
+              {% endif %}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </tr>
+    {% endfor %}
+  </table>
+</main>
 
 {% endblock %}
