@@ -66,23 +66,23 @@
       <td class="left-align">
         <div class="profile_icon">
           <!-- Display profile image of the user who received the friend request -->
-          {% if req.from_profile.profile_image_url %}
+          {% if req.to_profile.profile_image_url %}
           <img
             class="profile-image"
-            src="{{req.from_profile.profile_image_url}}"
-            alt="{{req.from_profile.profile_image_url}}"
+            src="{{req.to_profile.profile_image_url}}"
+            alt="{{req.to_profile.profile_image_url}}"
           />
           {% endif %}
         </div>
       </td>
 
-      <td class="left-align">{{ req.from_profile.user.username }}</td>
+      <td class="left-align">{{ req.to_profile.user.username }}</td>
 
       <td class="right-align">
         <!-- Option to cancel the pending friend request -->
         <form
           method="post"
-          action="{% url 'cancel_request' req.from_profile.id %}"
+          action="{% url 'cancel_request' req.to_profile.id %}"
           style="display: inline"
         >
           {% csrf_token %}

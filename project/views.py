@@ -247,7 +247,7 @@ class FriendSuggestionListView(LoginRequiredMixin, DetailView):
         """Return the URL required for login"""
         return reverse('login')
 
-    def get_profile(self):
+    def get_object(self):
         """Retrieve the PocketProfile associated with the current logged-in user"""
         return PocketProfile.objects.get(user=self.request.user)
 

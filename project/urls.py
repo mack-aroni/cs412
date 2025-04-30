@@ -13,6 +13,7 @@ urlpatterns = [
     path('', LoginOrProfileView.as_view(), name="landing"),
 
     # Profile and catalog views
+    path('profile/', LoginOrProfileView.as_view(), name='profile'),
     path('profile/<int:pk>/', PocketProfileView.as_view(), name='pocket_profile'),
     path('catalog/', CardCatalogView.as_view(), name='catalog'),
     path('packs/', PackSelectView.as_view(), name='packs'),
