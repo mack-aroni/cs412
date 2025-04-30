@@ -1,7 +1,9 @@
 <!-- project/templates/project/register.html
     File: register.html
-    Author: Ethan Machleder (emach@bu.edu) Aril 25, 2025
-    Description: 
+    Author: Ethan Machleder (emach@bu.edu) April 25, 2025
+    Description: This template is used for creating a new PocketTraders profile.
+    It includes fields for the user to provide a username, password, password
+    confirmation, and an optional profile image URL.
 -->
 
 {% load static %}
@@ -9,6 +11,7 @@
 <html>
   <head>
     <title>PocketTraders</title>
+    <!-- Link to external CSS for styling -->
     <link rel="stylesheet" href="{% static 'project/css/styles.css' %}" />
   </head>
   <body>
@@ -18,45 +21,60 @@
 
     <br />
     <div class="container">
+      <!-- Header for the registration form -->
       <h1>Create PocketProfile</h1>
 
+      <!-- Registration form -->
       <form
         method="POST"
         class="catalog-form"
         action="{% url 'register' %}"
       >
+        <!-- CSRF Token for security -->
         {% csrf_token %}
 
+        <!-- Form table with input fields -->
         <table class="register-table">
+          <!-- Username fieldset -->
           <fieldset>
             <legend>Username</legend>
             {{ user_form.username }}
-          </br>
+            <!-- Display help text for the username field -->
+            </br>
             <span>{{ user_form.username.help_text }}</span>
           </fieldset>
 
+          <!-- Password fieldset -->
           <fieldset>
             <legend>Password</legend>
             {{ user_form.password1 }}
-          </br>
+            </br>
+            <!-- Display help text for the password field -->
             <span>{{ user_form.password1.help_text }}</span>
           </fieldset>
 
+          <!-- Password confirmation fieldset -->
           <fieldset>
             <legend>Password Confirmation</legend>
             {{ user_form.password2 }}
-          </br>
+            </br>
+            <!-- Display help text for the password confirmation field -->
             <span>{{ user_form.password2.help_text }}</span>
           </fieldset>
 
+          <!-- Profile image URL fieldset -->
           <fieldset>
             <legend>Profile Image URL</legend>
             {{ form.profile_image_url }}
           </fieldset>
+
+          <!-- Commented out alternative form rendering for quick table layout -->
           {% comment %} {{user_form.as_table}} {{form.as_table}} {% endcomment %}
         </table>
 
+        <!-- Submit button for creating the account -->
         <input type="submit" value="Create" />
+        <!-- Link to the login page if the user already has an account -->
         <a href="{% url 'login' %}">Login</a>
       </form>
     </div>

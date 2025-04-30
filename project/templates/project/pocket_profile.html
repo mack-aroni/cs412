@@ -1,19 +1,25 @@
 <!-- project/templates/project/pocket_profile.html
     File: pocket_profile.html
     Author: Ethan Machleder (emach@bu.edu) April 30, 2025
-    Description: 
+    Description: This template displays the profile of another user. It shows
+    the user's profile image, username, and provides options for interactions
+    (e.g., sending, accepting, declining, or canceling friend requests). 
+    It also displays the cards associated with the user's profile.
 -->
 
 {% extends "project/base.html" %} {% block content %}
 <main class="container">
+  <!-- Display the profile header with the username of the user being viewed -->
   <h2>{{ profile_viewed.user.username }}'s Profile</h2>
 
+  <!-- Display the profile image and username in a table layout -->
   <table class="trade-table">
     <tbody>
       <tr>
         <td class="left-align">
           <div class="profile_icon">
             {% if profile_viewed.profile_image_url %}
+            <!-- Display the profile image if available -->
             <img
               class="profile-image"
               src="{{profile_viewed.profile_image_url}}"
@@ -32,20 +38,24 @@
 
   <hr />
 
-  <!-- Relationship Buttons -->
+  <!-- Display relationship buttons based on the user's relationship with the profile -->
   {% if is_me %}
+  <!-- If the viewed profile is the logged-in user's profile -->
   <p>This is my profile.</p>
   {% elif is_friend %}
+  <!-- If the profile is already a friend -->
   <form method="post" action="{% url 'remove_friend' profile_viewed.id %}">
     {% csrf_token %}
     <button type="submit" class="btn btn-danger">Remove Friend</button>
   </form>
   {% elif sent_request %}
+  <!-- If the user has sent a friend request -->
   <form method="post" action="{% url 'cancel_request' profile_viewed.id %}">
     {% csrf_token %}
     <button type="submit" class="btn btn-warning">Cancel Friend Request</button>
   </form>
   {% elif received_request %}
+  <!-- If the user has received a friend request -->
   <form
     method="post"
     action="{% url 'accept_request' profile_viewed.id %}"
@@ -63,6 +73,7 @@
     <button type="submit" class="btn btn-secondary">Decline</button>
   </form>
   {% else %}
+  <!-- If no friend request has been sent or received -->
   <form method="post" action="{% url 'send_request' profile_viewed.id %}">
     {% csrf_token %}
     <button type="submit" class="btn btn-primary">Send Friend Request</button>
@@ -70,9 +81,11 @@
   {% endif %}
 
   <hr />
+  <!-- Display a list of cards associated with the viewed profile -->
   <h3>Cards</h3>
   <div class="card-grid">
     {% for img in profile_viewed.get_card_images %}
+    <!-- Display each card image -->
     <img src="{{ img }}" alt="Card image" width="100" />
     {% endfor %}
   </div>

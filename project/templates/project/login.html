@@ -1,7 +1,9 @@
 <!-- project/templates/project/login.html
     File: login.html
     Author: Ethan Machleder (emach@bu.edu) April 14, 2025
-    Description: 
+    Description: The login page for PocketTraders where users can authenticate
+    using their username and password. Includes form validation and redirects
+    users to the profile page or a specific next page after login.
 -->
 
 {% load static %}
@@ -9,10 +11,12 @@
 <html>
   <head>
     <title>PocketTraders</title>
+    <!-- Link to the main stylesheet -->
     <link rel="stylesheet" href="{% static 'project/css/styles.css' %}" />
   </head>
   <body>
     <header>
+      <!-- Placeholder navigation header -->
       <nav></nav>
     </header>
 
@@ -20,21 +24,29 @@
       <br />
       <h1>PocketTraders Login</h1>
 
+      <!-- Login form -->
       <form method="POST" class="catalog-form" action="{% url 'login' %}">
         {% csrf_token %}
+
+        <!-- Username field -->
         <fieldset>
           <legend>Username</legend>
           {{ form.username }}
         </fieldset>
 
+        <!-- Password field -->
         <fieldset>
           <legend>Password</legend>
           {{ form.password }}
         </fieldset>
 
+        <!-- Submit button to log in -->
         <input type="submit" value="Login" />
+
+        <!-- Link to register page if the user doesn't have an account -->
         <a href="{% url 'register' %}">Register</a>
 
+        <!-- Handling redirect after login, either to the next page or profile page -->
         {% if request.GET.next %}
         <input type="hidden" name="next" value="{{ request.GET.next }}" />
         {% else %}

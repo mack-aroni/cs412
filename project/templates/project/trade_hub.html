@@ -1,12 +1,16 @@
 <!-- project/templates/project/trade_hub.html
     File: trade_hubs.html
     Author: Ethan Machleder (emach@bu.edu) April 27, 2025
-    Description: 
+    Description: This template is used to display a user's friends and trades
+    on the trade hub page. It shows a list of friends with options to trade,
+    view friend suggestions, and view trade requests. Additionally, it displays
+    ongoing and completed trades, along with options to manage or finalize trades.
 -->
 
 {% extends 'project/base.html' %} {% load static %} {% block content %}
 
 <main class="container">
+  <!-- Section for displaying the user's friends -->
   <h2>{{profile}}'s Friends</h2>
   <hr />
   <table>
@@ -15,6 +19,7 @@
       <table class="trade-table">
         <tbody>
           <tr>
+            <!-- Profile picture and link to the friend's profile -->
             <td class="left-align">
               <a href="{% url 'pocket_profile' friend.id %}">
                 <div class="profile_icon">
@@ -29,10 +34,12 @@
               </a>
             </td>
 
+            <!-- Display the friend's username -->
             <td class="left-align">
               <h2>{{friend.user}}</h2>
             </td>
 
+            <!-- Link to initiate a trade with the friend -->
             <td class="right-align">
               <a href="{% url 'trade_options' 0 profile.pk friend.pk %}"
                 >Trade</a
@@ -44,12 +51,15 @@
     </tr>
     {% endfor %}
   </table>
+
+  <!-- Links for viewing friend suggestions and friend requests -->
   <div>
     <a href="{% url 'friend_suggestions' %}">View Friend Suggestions</a>
     <a href="{% url 'friend_requests' %}">View Friend Requests</a>
   </div>
   <hr />
 
+  <!-- Section for displaying the user's trades -->
   <h2>{{profile}}'s Trades</h2>
   <hr />
   <table>
@@ -65,6 +75,7 @@
         </thead>
         <tbody>
           <tr>
+            <!-- Display the card that profile1 is sending -->
             <td class="left-align">
               {% if trade.card1 %}
               <div class="profile_icon">
@@ -85,6 +96,7 @@
               {% endif %}
             </td>
 
+            <!-- Display the card that profile2 is sending -->
             <td class="left-align">
               {% if trade.card2 %}
               <div class="profile_icon">
@@ -105,6 +117,7 @@
               {% endif %}
             </td>
 
+            <!-- Actions for managing the trade (Accept, Decline, Cancel) -->
             <td class="right-align">
               {% if trade.cancelled %}
               <p>Canceled</p>

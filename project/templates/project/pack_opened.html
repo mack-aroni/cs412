@@ -1,26 +1,35 @@
 <!-- project/templates/project/pack_select.html
     File: pack_opened.html
     Author: Ethan Machleder (emach@bu.edu) April 24, 2025
-    Description: 
+    Description: This page is displayed after a user opens a pack in the
+    PocketTraders app. It shows the contents of the opened pack, including the
+    cards and their details such as name and rarity. The user has an option to
+    open another pack.
 -->
 
 {% extends 'project/base.html' %} {% load static %} {% block content %}
+<!-- Header indicating that the user opened a pack -->
 <h2 class="card-opened-header">You opened a {{ pack_name }} pack!</h2>
 
+<!-- Display the cards in the opened pack -->
 <div class="card-grid">
   {% for card in cards %}
   <div class="card-item">
+    <!-- Display the card's image -->
     <img
       src="{{ card.card_image_url }}"
       class="card-image"
       alt="{{ card.name }}"
     />
+    <!-- Display the card's name and rarity -->
     <div>{{ card.name }} — {{ card.rarity }}</div>
   </div>
   {% endfor %}
 </div>
 
+<!-- Button to open another pack, links back to the pack selection page -->
 <div class="container">
   <a href="{% url 'packs' %}" class="open-button">Open Another</a>
 </div>
+
 {% endblock %}

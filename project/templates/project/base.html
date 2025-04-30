@@ -1,7 +1,10 @@
 <!-- project/templates/project/base.html
     File: base.html
     Author: Ethan Machleder (emach@bu.edu) April 14, 2025
-    Description: 
+    Description: This is the base template for the PocketTraders project.
+    It includes the global header, navigation bar, and layout structure.
+    Individual pages will extend this base and render their own content
+    inside the block tags.
 -->
 
 {% load static %}
@@ -9,11 +12,14 @@
 <html>
   <head>
     <title>PocketTraders</title>
+    <!-- Link to the global CSS stylesheet -->
     <link rel="stylesheet" href="{% static 'project/css/styles.css' %}" />
   </head>
   <body>
+    <!-- Site-wide header containing the navigation bar -->
     <header>
       <nav class="navbar">
+        <!-- Logo section -->
         <div class="navbar-logo">
           <img
             src="{% static 'project/logo.webp' %}"
@@ -21,6 +27,7 @@
           />
         </div>
 
+        <!-- Navigation links to key pages -->
         <div class="navbar-links">
           <ul>
             <li>
@@ -31,37 +38,50 @@
             </li>
             <li>
               {% with request.user.pocketprofile_set.first as pocketprofile %}
-              <a href="{% url 'trade' pocketprofile.pk %}" class="navbar-button"
-                >Trade Hub</a
+              <!-- Link to the Trade Hub, passing user's profile ID -->
+              <a
+                href="{% url 'trade' pocketprofile.pk %}"
+                class="navbar-button"
               >
+                Trade Hub
+              </a>
               {% endwith %}
             </li>
           </ul>
         </div>
 
+        <!-- User profile section with logout and profile access -->
         <div class="navbar-profile">
+          <!-- Logout form that redirects to login page on success -->
           <form method="POST" action="{% url 'logout' %}" class="logout-form">
             {% csrf_token %}
             <input type="submit" value="Log Out" class="logout-button" />
             <input type="hidden" name="next" value="{% url 'login' %}" />
           </form>
+
           {% with request.user.pocketprofile_set.first as p %}
+          <!-- Link to user's profile page -->
           <a href="{% url 'pocket_profile' p.id %}" class="profile-link">
-            <!-- prettier ignore -->
             {% if p.profile_image_url %}
+            <!-- If user has a profile image, display it -->
             <img
               class="profile-image"
-              src="{{p.profile_image_url}}"
-              alt="{{p.profile_image_url}}"
+              src="{{ p.profile_image_url }}"
+              alt="{{ p.profile_image_url }}"
             />
-            {% else %} {{ request.user }} {% endif %}
+            {% else %}
+            <!-- Fallback to displaying username if no image -->
+            {{ request.user }} {% endif %}
           </a>
           {% endwith %}
         </div>
       </nav>
     </header>
 
-    <!-- Content block where individual pages will render their unique content -->
-    {% block content %} {% endblock %} {% block extra_scripts %} {% endblock %}
+    <!-- Main content area to be overridden by extending templates -->
+    {% block content %}{% endblock %}
+
+    <!-- Optional extra scripts block -->
+    {% block extra_scripts %}{% endblock %}
   </body>
 </html>

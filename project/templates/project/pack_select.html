@@ -1,15 +1,21 @@
 <!-- project/templates/project/pack_select.html
     File: pack_select.html
     Author: Ethan Machleder (emach@bu.edu) April 24, 2025
-    Description: 
+    Description:  This template displays the pack selection form, where users
+    can choose a pack type to open. It shows a list of radio buttons for each
+    available pack type, displaying an image and name for each pack. The user
+    can submit their choice to proceed with opening the selected pack.
 -->
 
 {% extends 'project/base.html' %} {% load static %} {% block content %}
-
+<!-- Form for selecting a pack type -->
 <form method="post">
   {% csrf_token %}
+
+  <!-- Container for displaying all available pack options -->
   <div class="pack-selection">
     {% for value, label in form.fields.pack_type.choices %}
+    <!-- Radio button for each pack type -->
     <input
       type="radio"
       name="pack_type"
@@ -18,15 +24,18 @@
       class="pack-radio"
     />
     <label for="pack-{{ forloop.counter }}" class="pack-label">
+      <!-- Display the image for each pack type dynamically -->
       <img
         src="{% static 'project/'|add:label|lower|add:'_pack.webp' %}"
         alt="{{ label }}"
       />
+      <!-- Display the name of the pack type -->
       <div class="pack-name">{{ label }}</div>
     </label>
     {% endfor %}
   </div>
 
+  <!-- Button to submit the form and open the selected pack -->
   <button type="submit" class="open-button">Open Pack</button>
 </form>
 

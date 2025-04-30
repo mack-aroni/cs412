@@ -1,20 +1,24 @@
 <!-- project/templates/project/friend_suggestions.html
     File: friend_suggestions.html
     Author: Ethan Machleder (emach@bu.edu) April 27, 2025
-    Description: 
+    Description: Displays a list of potential friends for the current user, with
+    links to their profiles. Each suggestion includes their profile picture
+    (if available) and username.
 -->
 
 {% extends 'project/base.html' %} {% block content %}
-
 <main class="container">
   <h1>Potential Friends</h1>
 
+  <!-- Table displaying potential friend suggestions -->
   <table class="trade-table">
     {% for p in profile.get_friend_suggestions %}
     <tr>
       <td class="left-align">
+        <!-- Link to the user's profile -->
         <a href="{% url 'pocket_profile' p.id %}">
           <div class="profile_icon">
+            <!-- Display profile image if available -->
             {% if p.profile_image_url %}
             <img
               class="profile-image"
@@ -27,6 +31,7 @@
       </td>
 
       <td class="left-align">
+        <!-- Display username of the suggested friend -->
         <h2>{{p.user}}</h2>
       </td>
     </tr>

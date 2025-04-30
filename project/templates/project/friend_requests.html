@@ -1,13 +1,23 @@
+<!-- project/templates/project/friend_requests.html
+    File: friend_requests.html
+    Author: Ethan Machleder (emach@bu.edu) April 21, 2025
+    Description: Displays the user's incoming friend requests and outgoing
+    (pending) friend requests. Includes the option to accept, decline, or
+    cancel friend requests.
+-->
+
 {% extends "project/base.html" %} {% block content %}
 <main class="container">
   <h2>Friend Requests</h2>
 
+  <!-- Incoming Friend Requests Section -->
   {% if profile.get_friend_requests %}
   <table class="trade-table">
     {% for req in profile.get_friend_requests %}
     <tr>
       <td class="left-align">
         <div class="profile_icon">
+          <!-- Display profile image of the user who sent the friend request -->
           {% if req.from_profile.profile_image_url %}
           <img
             class="profile-image"
@@ -21,6 +31,7 @@
       <td class="left-align">{{ req.from_profile.user.username }}</td>
 
       <td class="right-align">
+        <!-- Accept or Decline request options -->
         <form
           method="post"
           action="{% url 'accept_request' req.from_profile.id %}"
@@ -46,6 +57,7 @@
   {% endif %}
   <hr />
 
+  <!-- Outgoing (Pending) Friend Requests Section -->
   <h2>Outgoing Requests</h2>
   {% if profile.get_pending_friend_requests %}
   <table class="trade-table">
@@ -53,6 +65,7 @@
     <tr>
       <td class="left-align">
         <div class="profile_icon">
+          <!-- Display profile image of the user who received the friend request -->
           {% if req.from_profile.profile_image_url %}
           <img
             class="profile-image"
@@ -66,6 +79,7 @@
       <td class="left-align">{{ req.from_profile.user.username }}</td>
 
       <td class="right-align">
+        <!-- Option to cancel the pending friend request -->
         <form
           method="post"
           action="{% url 'cancel_request' req.from_profile.id %}"

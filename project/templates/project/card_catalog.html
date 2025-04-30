@@ -1,42 +1,51 @@
 <!-- project/templates/project/card_catalog.html
     File: card_catalog.html
     Author: Ethan Machleder (emach@bu.edu) April 21, 2025
-    Description:
+    Description: This page renders the card catalog, where users can view all
+    available cards, apply filters to search, and toggle between owned and
+    unowned cards. A modal allows users to view card images in full size when clicked.
 -->
 
 {% extends 'project/base.html' %} {% load custom_filters %} {% block content %}
-
 <main class="container">
+  <!-- Page Title: Card Catalog -->
   <h2>Card Catalog</h2>
 
+  <!-- Filter toggle button to show/hide filter options -->
   <div class="filter-toggle">
     <button type="button" class="collapsible-toggle" onclick="toggleForm()">
       Filters <span id="chevron">▼</span>
     </button>
   </div>
 
+  <!-- Filter form container (hidden by default, toggled by button) -->
   <div id="filterFormContainer" class="collapsible-form">
     <form class="catalog-form" method="get">
+      <!-- Search filter -->
       <fieldset>
         <legend>Search</legend>
         {{ form.search_name }}
       </fieldset>
 
+      <!-- Booster pack filter -->
       <fieldset>
         <legend>Booster</legend>
         {{ form.boosters }}
       </fieldset>
 
+      <!-- Card rarity filter -->
       <fieldset>
         <legend>Rarity</legend>
         {{ form.rarities }}
       </fieldset>
 
+      <!-- Filter by card category (pokemon or trainer) -->
       <fieldset>
         <legend>Filter by Card Category</legend>
         {{ form.mode }}
       </fieldset>
 
+      <!-- Options for pokemon cards (hidden by default) -->
       <div id="pokemon-options" style="display: none">
         <fieldset>
           <legend>Pokemon Stages</legend>
@@ -48,6 +57,7 @@
         </fieldset>
       </div>
 
+      <!-- Options for trainer cards (hidden by default) -->
       <div id="trainer-options" style="display: none">
         <fieldset>
           <legend>Trainer Types</legend>
@@ -55,19 +65,22 @@
         </fieldset>
       </div>
 
+      <!-- Submit button to apply filters -->
       <button type="submit">Apply Filters</button>
     </form>
   </div>
 
+  <!-- Table showing the total cards and owned cards stats -->
   <table class="trade-table">
     <tr>
       <td class="left-align">
-        <p>{{ total_cards }} total cards</p3>
+        <p>{{ total_cards }} total cards</p>
       </td>
       <td class="left-align">
-        <p>{{ total_unique_cards_owned }} / {{ total_unique_cards }} </p3>
+        <p>{{ total_unique_cards_owned }} / {{ total_unique_cards }}</p>
       </td>
       <td class="right-align">
+        <!-- Checkbox to toggle the visibility of unowned cards -->
         <label>
           <input type="checkbox" id="show-unowned-toggle" />
           Show Unowned Cards
@@ -76,8 +89,10 @@
     </tr>
   </table>
 
+  <!-- Grid displaying the card items -->
   <article>
     <div class="card-grid">
+      <!-- Loop over the list of cards and render each one -->
       {% for card in cards %} {% with owned_map|get_item:card.id as count %}
       <div class="card-item {% if not count %} unowned{% endif %}">
         <img
@@ -87,23 +102,28 @@
           onclick="openModal('{{ card.card_image_url }}')"
         />
         {% if count %}
+        <!-- Display the count of owned cards if applicable -->
         <span class="card-count">{{ count }}</span>
         {% endif %}
       </div>
       {% endwith %} {% endfor %}
     </div>
 
+    <!-- Modal for displaying a larger image of the card when clicked -->
     <div id="cardModal" class="modal">
       <span class="close" onclick="closeModal()">&times;</span>
       <img class="modal-content" id="modalImg" />
     </div>
   </article>
 </main>
-{% endblock %} 
+{% endblock %}
+
+<!-- Block for including additional scripts specific to this page -->
 {% block extra_scripts %}
 <script>
   // FILTER FORM DROPDOWN
 
+  // Toggles the visibility of the filter form
   function toggleForm() {
     const container = document.getElementById("filterFormContainer");
     const chevron = document.getElementById("chevron");
@@ -126,17 +146,19 @@
     {% endif %}
   });
 
-  // FILTER FORM
+  // FILTER FORM VISIBILITY BASED ON CATEGORY SELECTION
 
   const modeCheckboxes = document.querySelectorAll('input[name="mode"]');
   const pokeSection = document.getElementById("pokemon-options");
   const trainerSection = document.getElementById("trainer-options");
 
+  // Uncheck all checkboxes inside a specific container
   function uncheckChildren(container) {
     const inputs = container.querySelectorAll('input[type="checkbox"]');
     inputs.forEach((input) => (input.checked = false));
   }
 
+  // Update the visibility of pokemon and trainer sections based on selected filters
   function updateVisibility() {
     let selectedModes = Array.from(modeCheckboxes)
       .filter((cb) => cb.checked)
@@ -164,6 +186,7 @@
 
   // OWNED/UNOWNED CARDS TOGGLE
 
+  // Toggle the visibility of unowned cards
   const toggle = document.getElementById("show-unowned-toggle");
 
   toggle.addEventListener("change", function () {
@@ -173,6 +196,7 @@
     });
   });
 
+  // Initialize the unowned cards to be hidden by default
   window.addEventListener("load", function () {
     toggle.checked = false;
     const unownedCards = document.querySelectorAll(".card-item.unowned");
@@ -181,8 +205,9 @@
     });
   });
 
-  // MODAL
+  // MODAL FUNCTIONALITY
 
+  // Open the modal with the selected card image
   function openModal(imageUrl) {
     const modal = document.getElementById("cardModal");
     const modalImg = document.getElementById("modalImg");
@@ -191,10 +216,12 @@
     modalImg.src = imageUrl;
   }
 
+  // Close the modal
   function closeModal() {
     document.getElementById("cardModal").style.display = "none";
   }
 
+  // Close modal if clicked outside the image area
   window.addEventListener("click", function (e) {
     const modal = document.getElementById("cardModal");
     if (e.target === modal) {
@@ -202,6 +229,7 @@
     }
   });
 
+  // Close modal on pressing Escape key
   window.addEventListener("keydown", function (e) {
     if (e.key === "Escape") {
       closeModal();
