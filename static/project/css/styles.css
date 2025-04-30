@@ -118,6 +118,11 @@ body {
   margin-bottom: 10px;
 }
 
+.greyscale {
+  filter: grayscale(100%);
+  opacity: 0.7;
+}
+
 .card-item {
   display: flex;
   flex-direction: column;
@@ -127,6 +132,7 @@ body {
   border-radius: 8px;
   background-color: #f9f9f9;
   width: 183px;
+  transition: all 0.3s ease;
 }
 
 .card-count {
@@ -181,6 +187,35 @@ body {
 }
 
 /* CATALOG FORM */
+
+.filter-toggle {
+  margin-bottom: 1rem;
+}
+
+.collapsible-toggle {
+  background-color: #eee;
+  border: none;
+  padding: 10px 16px;
+  font-size: 1rem;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.collapsible-toggle:hover {
+  background-color: #ddd;
+}
+
+.collapsible-form {
+  display: none;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
 
 .catalog-form {
   font-family: "Monaco", monospace;

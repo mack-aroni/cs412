@@ -59,7 +59,7 @@ class TempHome(LoginRequiredMixin, ListView):
         '''return the URL required for login'''
         return reverse('login')
 
-class CardCatalogView(LoginRequiredMixin, ListView):
+class CardCatalogView6(LoginRequiredMixin, ListView):
     model = OwnedBy
     template_name = 'project/card_catalog.html'
     context_object_name = 'cards'
@@ -82,16 +82,15 @@ class CardCatalogView(LoginRequiredMixin, ListView):
             poke_stages = form.cleaned_data.get('poke_stages')
             poke_types = form.cleaned_data.get('poke_types')
             trainer_types = form.cleaned_data.get('trainer_types')
+
             search_name = form.cleaned_data.get('search_name', '').strip()
             boosters = form.cleaned_data.get('boosters')
             rarity = form.cleaned_data.get('rarities')
 
             if search_name:
                 queryset = queryset.filter(card__name__icontains=search_name)
-
-            if  boosters:
+            if boosters:
                 queryset = queryset.filter(card__booster__in=boosters)
-
             if rarity:
                 queryset = queryset.filter(card__rarity__in=rarity)
 
@@ -110,10 +109,90 @@ class CardCatalogView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         '''Pass form and result count to the template.'''
-        context = super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)        
         context["form"] = FilterCardForm(self.request.GET)
-        context["result_count"] = self.get_queryset().count()
+        context["filter_open"] = bool(self.request.GET)
+
+        queryset = self.object_list
+        context["result_count"] = queryset.count()
+        # Total cards (all OwnedBy entries)
+        context["total_cards"] = queryset.count()
+        # Total unique cards the user owns
+        context["total_unique_cards"] = queryset.values('card').distinct().count()
+        # Optional: total unique cards in the entire system (not just user)
+        context["total_unique_cards_owned"] = OwnedBy.objects.values('card').distinct().count()
         return context
+
+class CardCatalogView(LoginRequiredMixin, ListView):
+    model = Card
+    template_name = 'project/card_catalog.html'
+    context_object_name = 'cards'
+
+    def get_login_url(self):
+        return reverse('login')
+
+    def get_profile(self):
+        return PocketProfile.objects.get(user=self.request.user)
+
+    def get_queryset(self):
+        '''Apply filters based on form fields.'''
+        form = FilterCardForm(self.request.GET)
+        queryset = Card.objects.all()
+
+        if form.is_valid():
+            mode = form.cleaned_data.get('mode')
+            poke_stages = form.cleaned_data.get('poke_stages')
+            poke_types = form.cleaned_data.get('poke_types')
+            trainer_types = form.cleaned_data.get('trainer_types')
+
+            search_name = form.cleaned_data.get('search_name', '').strip()
+            boosters = form.cleaned_data.get('boosters')
+            rarity = form.cleaned_data.get('rarities')
+
+            if search_name:
+                queryset = queryset.filter(name__icontains=search_name)
+            if boosters:
+                queryset = queryset.filter(booster__in=boosters)
+            if rarity:
+                queryset = queryset.filter(rarity__in=rarity)
+
+            if 'pokemon' in mode:
+                if poke_stages:
+                    queryset = queryset.filter(card_type__in=poke_stages)
+                if poke_types:
+                    queryset = queryset.filter(poke_type__in=poke_types)
+
+            if 'trainer' in mode:
+                if trainer_types:
+                    queryset = queryset.filter(card_type__in=trainer_types)
+
+        queryset = queryset.order_by('cid')
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        '''Pass form and result count to the template.'''
+        context = super().get_context_data(**kwargs)     
+        profile = self.get_profile()
+
+        context["form"] = FilterCardForm(self.request.GET)
+        context["filter_open"] = bool(self.request.GET)
+
+        owned_cards = OwnedBy.objects.filter(profile=profile)
+        owned_map = {o.card_id: o.count for o in owned_cards}
+        context["owned_map"] = owned_map
+
+        queryset = self.object_list
+
+        context["total_unique_cards"] = queryset.count()
+        owned_card_ids = owned_cards.values_list('card_id', flat=True)
+        filtered_card_ids = queryset.values_list('id', flat=True)
+        intersection = set(owned_card_ids) & set(filtered_card_ids)
+        context["total_unique_cards_owned"] = len(intersection)
+        
+        context["total_cards"] = sum(owned_map[c] for c in intersection) 
+
+        return context  
+
 
 class PackSelectView(LoginRequiredMixin, FormView):
     form_class = PackSelectForm

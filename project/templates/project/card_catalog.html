@@ -4,72 +4,93 @@
     Description:
 -->
 
-{% extends 'project/base.html' %} {% block content %}
-
-<div class="container">
-  <h2>Card Catalog</h2>
-
-  <form class="catalog-form" method="get">
-    <fieldset>
-      <legend>Search</legend>
-      {{ form.search_name }}
-    </fieldset>
-
-    <fieldset>
-      <legend>Booster</legend>
-      {{ form.boosters }}
-    </fieldset>
-
-    <fieldset>
-      <legend>Rarity</legend>
-      {{ form.rarities }}
-    </fieldset>
-
-    <fieldset>
-      <legend>Filter by Card Category</legend>
-      {{ form.mode }}
-    </fieldset>
-
-    <div id="pokemon-options" style="display: none">
-      <fieldset>
-        <legend>Pokemon Stages</legend>
-        {{ form.poke_stages }}
-      </fieldset>
-      <fieldset>
-        <legend>Pokemon Types</legend>
-        {{ form.poke_types }}
-      </fieldset>
-    </div>
-
-    <div id="trainer-options" style="display: none">
-      <fieldset>
-        <legend>Trainer Types</legend>
-        {{ form.trainer_types }}
-      </fieldset>
-    </div>
-
-    <button type="submit">Apply Filters</button>
-  </form>
-
-  <h3>{{ result_count }} cards found</h3>
-</div>
+{% extends 'project/base.html' %} {% load custom_filters %} {% block content %}
 
 <main class="container">
+  <h2>Card Catalog</h2>
+
+  <div class="filter-toggle">
+    <button type="button" class="collapsible-toggle" onclick="toggleForm()">
+      Filters <span id="chevron">▼</span>
+    </button>
+  </div>
+
+  <div id="filterFormContainer" class="collapsible-form">
+    <form class="catalog-form" method="get">
+      <fieldset>
+        <legend>Search</legend>
+        {{ form.search_name }}
+      </fieldset>
+
+      <fieldset>
+        <legend>Booster</legend>
+        {{ form.boosters }}
+      </fieldset>
+
+      <fieldset>
+        <legend>Rarity</legend>
+        {{ form.rarities }}
+      </fieldset>
+
+      <fieldset>
+        <legend>Filter by Card Category</legend>
+        {{ form.mode }}
+      </fieldset>
+
+      <div id="pokemon-options" style="display: none">
+        <fieldset>
+          <legend>Pokemon Stages</legend>
+          {{ form.poke_stages }}
+        </fieldset>
+        <fieldset>
+          <legend>Pokemon Types</legend>
+          {{ form.poke_types }}
+        </fieldset>
+      </div>
+
+      <div id="trainer-options" style="display: none">
+        <fieldset>
+          <legend>Trainer Types</legend>
+          {{ form.trainer_types }}
+        </fieldset>
+      </div>
+
+      <button type="submit">Apply Filters</button>
+    </form>
+  </div>
+
+  <table class="trade-table">
+    <tr>
+      <td class="left-align">
+        <p>{{ total_cards }} total cards</p3>
+      </td>
+      <td class="left-align">
+        <p>{{ total_unique_cards_owned }} / {{ total_unique_cards }} </p3>
+      </td>
+      <td class="right-align">
+        <label>
+          <input type="checkbox" id="show-unowned-toggle" />
+          Show Unowned Cards
+        </label>
+      </td>
+    </tr>
+  </table>
+
   <article>
     <div class="card-grid">
-      {% for owned in cards %}
-      <div class="card-item">
+      {% for card in cards %} {% with owned_map|get_item:card.id as count %}
+      <div class="card-item {% if not count %} unowned{% endif %}">
         <img
-          class="card-image"
-          src="{{ owned.card.card_image_url }}"
-          alt="{{ owned.card.name }}"
-          onclick="openModal('{{ owned.card.card_image_url }}')"
+          class="card-image {% if not count %} greyscale{% endif %}"
+          src="{{ card.card_image_url }}"
+          alt="{{ card.name }}"
+          onclick="openModal('{{ card.card_image_url }}')"
         />
-        <span class="card-count">{{ owned.count }}</span>
+        {% if count %}
+        <span class="card-count">{{ count }}</span>
+        {% endif %}
       </div>
-      {% empty %}
-      <p>No cards found.</p>
-      {% endfor %}
+      {% endwith %} {% endfor %}
     </div>
 
     <div id="cardModal" class="modal">
@@ -78,8 +99,33 @@
     </div>
   </article>
 </main>
-{% endblock %} {% block extra_scripts %}
+{% endblock %} 
+{% block extra_scripts %}
 <script>
+  // FILTER FORM DROPDOWN
+
+  function toggleForm() {
+    const container = document.getElementById("filterFormContainer");
+    const chevron = document.getElementById("chevron");
+
+    const isVisible = container.style.display === "block";
+    container.style.display = isVisible ? "none" : "block";
+    chevron.textContent = isVisible ? "▼" : "▲";
+  }
+
+  window.addEventListener("load", function () {
+    const container = document.getElementById("filterFormContainer");
+    const chevron = document.getElementById("chevron");
+
+    {% if filter_open %}
+      container.style.display = "block";
+      chevron.textContent = "▲";
+    {% else %}
+      container.style.display = "none";
+      chevron.textContent = "▼";
+    {% endif %}
+  });
+
   // FILTER FORM
 
   const modeCheckboxes = document.querySelectorAll('input[name="mode"]');
@@ -115,6 +161,25 @@
     cb.addEventListener("change", updateVisibility)
   );
   window.addEventListener("load", updateVisibility);
+
+  // OWNED/UNOWNED CARDS TOGGLE
+
+  const toggle = document.getElementById("show-unowned-toggle");
+
+  toggle.addEventListener("change", function () {
+    const unownedCards = document.querySelectorAll(".card-item.unowned");
+    unownedCards.forEach(card => {
+      card.style.display = toggle.checked ? "block" : "none";
+    });
+  });
+
+  window.addEventListener("load", function () {
+    toggle.checked = false;
+    const unownedCards = document.querySelectorAll(".card-item.unowned");
+    unownedCards.forEach(card => {
+      card.style.display = "none";
+    });
+  });
 
   // MODAL
 
