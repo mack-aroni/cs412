@@ -27,24 +27,20 @@ class PocketProfile(models.Model):
         friend_profiles = [f.profile1 if f.profile2 == self else f.profile2 for f in friends]
         return friend_profiles
 
-    def add_friend(self, other):
-        if self == other:
-            return
-        
-        existing_friendship = PocketFriend.objects.filter(
-            (models.Q(profile1=self, profile2=other) | models.Q(profile1=other, profile2=self))
-        ).exists()
-        
-        if not existing_friendship:
-            PocketFriend.objects.create(profile1=self, profile2=other)
+    def get_friend_requests(self):
+        requests = PocketFriendRequest.objects.filter(to_profile=self)
+        requests = requests.order_by('timestamp')
+        return requests
+
+    def get_pending_friend_requests(self):
+        requests = PocketFriendRequest.objects.filter(from_profile=self)
+        requests = requests.order_by('timestamp')
+        return requests
 
     def get_friend_suggestions(self):
         friends = PocketFriend.objects.filter(models.Q(profile1=self) | models.Q(profile2=self))
-
         friend_profiles = [f.profile1 if f.profile2 == self else f.profile2 for f in friends]
-
         non_friends = PocketProfile.objects.exclude(id=self.id).exclude(id__in=[profile.id for profile in friend_profiles])
-
         return non_friends
 
     def get_trades(self):
@@ -80,11 +76,19 @@ class OwnedBy(models.Model):
         '''Return a string representation of this OwnedBy relation'''
         return f'{self.profile} owns {self.card}({self.count})'
 
+class PocketFriendRequest(models.Model):
+    from_profile = models.ForeignKey(PocketProfile, related_name='sent_requests', on_delete=models.CASCADE)
+    to_profile = models.ForeignKey(PocketProfile, related_name='received_requests', on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.from_profile} sent a friend request to {self.to_profile}'
+
 class PocketFriend(models.Model):
     '''Encapsulate the relation between a PocketProfile and another PocketProfile'''
 
-    profile1 = models.ForeignKey("PocketProfile", on_delete=models.CASCADE, related_name="profile1")
-    profile2 = models.ForeignKey("PocketProfile", on_delete=models.CASCADE, related_name="profile2")
+    profile1 = models.ForeignKey(PocketProfile, related_name="profile1", on_delete=models.CASCADE)
+    profile2 = models.ForeignKey(PocketProfile, related_name="profile2", on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now=True)
 
     def __str__(self):

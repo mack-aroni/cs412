@@ -1,0 +1,80 @@
+<!-- project/templates/project/pocket_profile.html
+    File: pocket_profile.html
+    Author: Ethan Machleder (emach@bu.edu) April 30, 2025
+    Description: 
+-->
+
+{% extends "project/base.html" %} {% block content %}
+<main class="container">
+  <h2>{{ profile_viewed.user.username }}'s Profile</h2>
+
+  <table class="trade-table">
+    <tbody>
+      <tr>
+        <td class="left-align">
+          <div class="profile_icon">
+            {% if profile_viewed.profile_image_url %}
+            <img
+              class="profile-image"
+              src="{{profile_viewed.profile_image_url}}"
+              alt="{{profile_viewed.profile_image_url}}"
+            />
+            {% endif %}
+          </div>
+        </td>
+
+        <td class="left-align">
+          <h2>{{profile_viewed.user}}</h2>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr />
+
+  <!-- Relationship Buttons -->
+  {% if is_me %}
+  <p>This is my profile.</p>
+  {% elif is_friend %}
+  <form method="post" action="{% url 'remove_friend' profile_viewed.id %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Remove Friend</button>
+  </form>
+  {% elif sent_request %}
+  <form method="post" action="{% url 'cancel_request' profile_viewed.id %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-warning">Cancel Friend Request</button>
+  </form>
+  {% elif received_request %}
+  <form
+    method="post"
+    action="{% url 'accept_request' profile_viewed.id %}"
+    style="display: inline"
+  >
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success">Accept Request</button>
+  </form>
+  <form
+    method="post"
+    action="{% url 'decline_request' profile_viewed.id %}"
+    style="display: inline"
+  >
+    {% csrf_token %}
+    <button type="submit" class="btn btn-secondary">Decline</button>
+  </form>
+  {% else %}
+  <form method="post" action="{% url 'send_request' profile_viewed.id %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Send Friend Request</button>
+  </form>
+  {% endif %}
+
+  <hr />
+  <h3>Cards</h3>
+  <div class="card-grid">
+    {% for img in profile_viewed.get_card_images %}
+    <img src="{{ img }}" alt="Card image" width="100" />
+    {% endfor %}
+  </div>
+</main>
+{% endblock %}

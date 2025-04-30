@@ -20,7 +20,10 @@ from django.contrib.auth import login
 class LoginOrProfileView(View):
     def get(self, request):
         if request.user.is_authenticated:
-            return redirect('profile')
+            profile = request.user.pocketprofile_set.first()
+            if profile:
+                return redirect('pocket_profile', pk=profile.id)
+            return redirect('create_profile')
         return redirect('login')
 
 class CreatePocketProfile(CreateView):
@@ -48,16 +51,6 @@ class CreatePocketProfile(CreateView):
     def get_success_url(self):
         """Redirect to the user's profile page after successful profile creation."""
         return reverse('profile')
-
-class TempHome(LoginRequiredMixin, ListView):
-    '''TEMP VIEW'''
-    model = PocketProfile
-    template_name = 'project/temp_home.html'
-    context_object_name = 'pocket_profiles'
-
-    def get_login_url(self):
-        '''return the URL required for login'''
-        return reverse('login')
 
 class CardCatalogView(LoginRequiredMixin, ListView):
     model = Card
@@ -129,7 +122,6 @@ class CardCatalogView(LoginRequiredMixin, ListView):
 
         return context  
 
-
 class PackSelectView(LoginRequiredMixin, FormView):
     form_class = PackSelectForm
     template_name = 'project/pack_select.html'
@@ -177,7 +169,7 @@ class TradeHubView(LoginRequiredMixin, DetailView):
         '''return the URL required for login'''
         return reverse('login')
 
-class ShowPocketFriendSuggestionsView(LoginRequiredMixin, DetailView):
+class FriendSuggestionListView(LoginRequiredMixin, DetailView):
     model = PocketProfile
     template_name = 'project/friend_suggestions.html'
     context_object_name = 'profile'
@@ -189,45 +181,89 @@ class ShowPocketFriendSuggestionsView(LoginRequiredMixin, DetailView):
     def get_object(self):
         return PocketProfile.objects.get(user=self.request.user)
 
-class AddPocketFriendView(View):
+class FriendRequestListView(LoginRequiredMixin, DetailView):
+    model = PocketFriend
+    template_name = 'project/friend_requests.html'
+    context_object_name = 'profile'
+
+    def get_login_url(self):
+        '''return the URL required for login'''
+        return reverse('login')
+
     def get_object(self):
         return PocketProfile.objects.get(user=self.request.user)
 
-    def dispatch(self, request, friend_pk, *args, **kwargs):
-        if not request.user.is_authenticated:
-            # Redirect to the login page
-            return redirect('login')  
+class PocketProfileView(LoginRequiredMixin, DetailView):
+    model = PocketProfile
+    template_name = 'project/pocket_profile.html'
+    context_object_name = 'profile_viewed'
 
-        # Retrieve the profiles using their primary keys
-        profile1 = self.get_object()
-        profile2 = PocketProfile.objects.get(pk=friend_pk)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        profile = self.get_object()
+        viewer = get_object_or_404(PocketProfile, user=self.request.user)
 
-        # Add profile2 as a friend to profile1
-        profile1.add_friend(profile2)
+        context['is_me'] = profile == viewer
+        context['is_friend'] = profile in viewer.get_friends()
+        context['sent_request'] = PocketFriendRequest.objects.filter(from_profile=viewer, to_profile=profile).first()
+        context['received_request'] = PocketFriendRequest.objects.filter(from_profile=profile, to_profile=viewer).first()
+        return context
 
-        # Redirect to the profile page of profile1
-        return redirect('trade', pk=profile1.pk)
-
-#FIX
-class RemovePocketFriendView(View):
+class SendFriendRequestView(LoginRequiredMixin, View):
     def get_object(self):
         return PocketProfile.objects.get(user=self.request.user)
 
-    def dispatch(self, request, friend_pk, *args, **kwargs):
-        if not request.user.is_authenticated:
-            # Redirect to the login page
-            return redirect('login')  
+    def post(self, request, *args, **kwargs):
+        from_profile = self.get_object()
+        to_profile = get_object_or_404(PocketProfile, id=self.kwargs['profile_id'])
+        if from_profile != to_profile:
+            PocketFriendRequest.objects.get_or_create(from_profile=from_profile, to_profile=to_profile)
+        return redirect('pocket_profile', pk=to_profile.id)
 
-        # Retrieve the profiles using their primary keys
-        profile1 = self.get_object()
-        profile2 = PocketProfile.objects.get(pk=friend_pk)
+class CancelFriendRequestView(LoginRequiredMixin, View):
+    def get_object(self):
+        return PocketProfile.objects.get(user=self.request.user)
 
-        # FIX
-        # Add profile2 as a friend to profile1
-        profile1.add_friend(profile2)
+    def post(self, request, *args, **kwargs):
+        from_profile = self.get_object()
+        PocketFriendRequest.objects.filter(from_profile=from_profile, to_profile_id=self.kwargs['profile_id']).delete()
+        return redirect('pocket_profile', pk=self.kwargs['profile_id'])
 
-        # Redirect to the profile page of profile1
-        return redirect('trade', pk=profile1.pk)
+class AcceptFriendRequestView(LoginRequiredMixin, View):
+    def get_object(self):
+        return PocketProfile.objects.get(user=self.request.user)
+
+    def post(self, request, *args, **kwargs):
+        to_profile = self.get_object()
+        from_profile = get_object_or_404(PocketProfile, id=self.kwargs['profile_id'])
+        
+        friend_request = get_object_or_404(PocketFriendRequest, from_profile=from_profile, to_profile=to_profile)
+
+        profile1, profile2 = sorted([to_profile, from_profile], key=lambda p: p.id)
+        PocketFriend.objects.get_or_create(profile1=profile1, profile2=profile2)
+        friend_request.delete()
+        return redirect('friend_requests')
+
+class DeclineFriendRequestView(LoginRequiredMixin, View):
+    def get_object(self):
+        return PocketProfile.objects.get(user=self.request.user)
+
+    def post(self, request, *args, **kwargs):
+        to_profile = self.get_object()
+        PocketFriendRequest.objects.filter(from_profile_id=self.kwargs['profile_id'], to_profile=to_profile).delete()
+        return redirect('friend_requests')
+
+class RemoveFriendView(LoginRequiredMixin, View):
+    def get_object(self):
+        return PocketProfile.objects.get(user=self.request.user)
+
+    def post(self, request, *args, **kwargs):
+        my_profile = self.get_object()
+        other_profile = get_object_or_404(PocketProfile, id=self.kwargs['profile_id'])
+
+        profile1, profile2 = sorted([my_profile, other_profile], key=lambda p: p.id)
+        PocketFriend.objects.filter(profile1=profile1, profile2=profile2).delete()
+        return redirect('pocket_profile', pk=other_profile.id)
 
 class TradeOptionsView(LoginRequiredMixin, ListView):
     model = OwnedBy

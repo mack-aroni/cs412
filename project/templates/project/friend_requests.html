@@ -1,0 +1,85 @@
+{% extends "project/base.html" %} {% block content %}
+<main class="container">
+  <h2>Friend Requests</h2>
+
+  {% if profile.get_friend_requests %}
+  <table class="trade-table">
+    {% for req in profile.get_friend_requests %}
+    <tr>
+      <td class="left-align">
+        <div class="profile_icon">
+          {% if req.from_profile.profile_image_url %}
+          <img
+            class="profile-image"
+            src="{{req.from_profile.profile_image_url}}"
+            alt="{{req.from_profile.profile_image_url}}"
+          />
+          {% endif %}
+        </div>
+      </td>
+
+      <td class="left-align">{{ req.from_profile.user.username }}</td>
+
+      <td class="right-align">
+        <form
+          method="post"
+          action="{% url 'accept_request' req.from_profile.id %}"
+          style="display: inline"
+        >
+          {% csrf_token %}
+          <button type="submit">Accept</button>
+        </form>
+        <form
+          method="post"
+          action="{% url 'decline_request' req.from_profile.id %}"
+          style="display: inline"
+        >
+          {% csrf_token %}
+          <button type="submit">Decline</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p>No friend requests.</p>
+  {% endif %}
+  <hr />
+
+  <h2>Outgoing Requests</h2>
+  {% if profile.get_pending_friend_requests %}
+  <table class="trade-table">
+    {% for req in profile.get_pending_friend_requests %}
+    <tr>
+      <td class="left-align">
+        <div class="profile_icon">
+          {% if req.from_profile.profile_image_url %}
+          <img
+            class="profile-image"
+            src="{{req.from_profile.profile_image_url}}"
+            alt="{{req.from_profile.profile_image_url}}"
+          />
+          {% endif %}
+        </div>
+      </td>
+
+      <td class="left-align">{{ req.from_profile.user.username }}</td>
+
+      <td class="right-align">
+        <form
+          method="post"
+          action="{% url 'cancel_request' req.from_profile.id %}"
+          style="display: inline"
+        >
+          {% csrf_token %}
+          <button type="submit">Cancel</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p>No pending requests</p>
+  {% endif %}
+</main>
+{% endblock %}

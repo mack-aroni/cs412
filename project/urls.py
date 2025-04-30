@@ -9,7 +9,8 @@ from .views import *
 
 urlpatterns = [
     path('', LoginOrProfileView.as_view(), name="landing"),
-    path('profile/', TempHome.as_view(), name='profile'),
+    path('profile/<int:pk>/', PocketProfileView.as_view(), name='pocket_profile'),
+    
     path('catalog/', CardCatalogView.as_view(), name='catalog'),
     path('packs/', PackSelectView.as_view(), name='packs'),
 
@@ -20,9 +21,13 @@ urlpatterns = [
     path('trade/accept/<int:trade_pk>/<int:card_pk>', AcceptTradeView.as_view(), name='accept_trade'),    
     path('trade/finalize/<int:trade_pk>', FinalizeTradeView.as_view(), name='trade_finalize'),
 
-
-    path('friend/suggestions/', ShowPocketFriendSuggestionsView.as_view(), name="friend_suggestions"),
-    path('friend/add/<int:friend_pk>', AddPocketFriendView.as_view(), name='add_friend'),
+    path('friend/requests/', FriendRequestListView.as_view(), name='friend_requests'),
+    path('friend/suggestions/', FriendSuggestionListView.as_view(), name="friend_suggestions"),
+    path('send-request/<int:profile_id>/', SendFriendRequestView.as_view(), name='send_request'),
+    path('cancel-request/<int:profile_id>/', CancelFriendRequestView.as_view(), name='cancel_request'),
+    path('accept-request/<int:profile_id>/', AcceptFriendRequestView.as_view(), name='accept_request'),
+    path('decline-request/<int:profile_id>/', DeclineFriendRequestView.as_view(), name='decline_request'),
+    path('remove-friend/<int:profile_id>/', RemoveFriendView.as_view(), name='remove_friend'),
 
     path('register/', CreatePocketProfile.as_view(), name='register'),
     path('login/', auth_views.LoginView.as_view(template_name='project/login.html'), name='login'),

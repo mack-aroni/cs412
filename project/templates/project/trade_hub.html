@@ -16,15 +16,17 @@
         <tbody>
           <tr>
             <td class="left-align">
-              <div class="profile_icon">
-                {% if friend.profile_image_url %}
-                <img
-                  class="profile-image"
-                  src="{{friend.profile_image_url}}"
-                  alt="{{friend.profile_image_url}}"
-                />
-                {% endif %}
-              </div>
+              <a href="{% url 'pocket_profile' friend.id %}">
+                <div class="profile_icon">
+                  {% if friend.profile_image_url %}
+                  <img
+                    class="profile-image"
+                    src="{{friend.profile_image_url}}"
+                    alt="{{friend.profile_image_url}}"
+                  />
+                  {% endif %}
+                </div>
+              </a>
             </td>
 
             <td class="left-align">
@@ -44,6 +46,7 @@
   </table>
   <div>
     <a href="{% url 'friend_suggestions' %}">View Friend Suggestions</a>
+    <a href="{% url 'friend_requests' %}">View Friend Requests</a>
   </div>
   <hr />
 

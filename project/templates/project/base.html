@@ -45,8 +45,8 @@
             <input type="submit" value="Log Out" class="logout-button" />
             <input type="hidden" name="next" value="{% url 'login' %}" />
           </form>
-          <a href="{% url 'profile' %}" class="profile-link">
-            {% with request.user.pocketprofile_set.first as p %}
+          {% with request.user.pocketprofile_set.first as p %}
+          <a href="{% url 'pocket_profile' p.id %}" class="profile-link">
             <!-- prettier ignore -->
             {% if p.profile_image_url %}
             <img
@@ -54,8 +54,9 @@
               src="{{p.profile_image_url}}"
               alt="{{p.profile_image_url}}"
             />
-            {% else %} {{ request.user }} {% endif %} {% endwith %}
+            {% else %} {{ request.user }} {% endif %}
           </a>
+          {% endwith %}
         </div>
       </nav>
     </header>
