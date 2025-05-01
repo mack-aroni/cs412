@@ -14,6 +14,7 @@ from django.views.generic.edit import UpdateView, DeleteView
 
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
+from django.http import JsonResponse
 
 from django.contrib.auth.mixins import LoginRequiredMixin 
 from django.contrib.auth.forms import UserCreationForm
@@ -141,6 +142,7 @@ class CardCatalogView(LoginRequiredMixin, ListView):
         # Get the default context from the superclass
         context = super().get_context_data(**kwargs)
         profile = self.get_profile()  # Get the current user's profile
+        context["profile"] = profile
         context["form"] = FilterCardForm(self.request.GET)  # Include the filter form in context
         context["filter_open"] = bool(self.request.GET)  # Determine if any filters are applied
 
@@ -163,6 +165,49 @@ class CardCatalogView(LoginRequiredMixin, ListView):
         context["total_cards"] = sum(owned_map[c] for c in intersection)  # Total owned cards count
 
         return context
+
+class ToggleWishlistView(LoginRequiredMixin, View):
+    """Handle adding or removing a card from the user's wishlist via POST request."""
+
+    def get_login_url(self):
+        """Return the URL required for login."""
+        return reverse('login')
+
+    def get_object(self):
+        """Retrieve the PocketProfile associated with the current logged-in user."""
+        return PocketProfile.objects.get(user=self.request.user)
+
+    def post(self, request, *args, **kwargs):
+        """
+        Process a POST request to toggle a card's presence in the user's wishlist.
+        
+        If the card is not already in the wishlist, it will be added.
+        If it is already present, it will be removed.
+        Returns a JSON response indicating the result.
+        """
+        # Get the card ID from the POST data
+        card_id = request.POST.get('card_id')
+
+        # Try to retrieve the Card object by primary key
+        try:
+            card = Card.objects.get(pk=card_id)
+        except Card.DoesNotExist:
+            # If the card doesn't exist, return an error JSON response
+            return JsonResponse({'error': 'Card not found'}, status=404)
+
+        # Attempt to get or create a Wishlist item for the current user and the specified card
+        wishlist_item, created = Wishlist.objects.get_or_create(
+            profile=self.get_object(),
+            card=card
+        )
+
+        # If the Wishlist item already existed, remove it (toggle off)
+        if not created:
+            wishlist_item.delete()
+            return JsonResponse({'status': 'removed'})
+
+        # If it was just created, it has been added (toggle on)
+        return JsonResponse({'status': 'added'})
 
 class PackSelectView(LoginRequiredMixin, FormView):
     """

@@ -26,6 +26,12 @@ class PocketProfile(models.Model):
         card_images = [c.card.card_image_url for c in cards]
         return card_images
 
+    def get_wishlist(self):
+        '''Return a list of Cards wishlisted by this profile.'''
+        wishlist = Wishlist.objects.filter(profile=self)
+        cards = [w.card for w in wishlist]
+        return cards
+
     def get_friends(self):
         '''Return a list of PocketProfiles that are friends with this profile.'''
         friends = PocketFriend.objects.filter(models.Q(profile1=self) | models.Q(profile2=self))
@@ -85,6 +91,17 @@ class OwnedBy(models.Model):
         '''Return a string representation of this OwnedBy relation.'''
         return f'{self.profile} owns {self.card} ({self.count})'
 
+    def save(self, *args, **kwargs):
+        # Check if this is a new relation 
+        is_new = self._state.adding
+
+        # Save the OwnedBy relation
+        super().save(*args, **kwargs)
+
+        # If new, remove the card from Wishlist if it exists
+        if is_new:
+            Wishlist.objects.filter(profile=self.profile, card=self.card).delete()
+
 class PocketFriendRequest(models.Model):
     '''Model representing a friend request between PocketProfiles.'''
 
@@ -110,13 +127,13 @@ class PocketFriend(models.Model):
 class TradeRequest(models.Model):
     '''Represents a trade request between two PocketProfiles.'''
 
-    profile1 = models.ForeignKey("PocketProfile", on_delete=models.CASCADE, related_name="trade_sender")
-    profile2 = models.ForeignKey("PocketProfile", on_delete=models.CASCADE, related_name="trade_receiver")
+    profile1 = models.ForeignKey(PocketProfile, on_delete=models.CASCADE, related_name="trade_sender")
+    profile2 = models.ForeignKey(PocketProfile, on_delete=models.CASCADE, related_name="trade_receiver")
     timestamp = models.DateTimeField(auto_now=True)
 
-    card1 = models.ForeignKey("OwnedBy", on_delete=models.CASCADE, related_name="sender_card")  # Sender's card
+    card1 = models.ForeignKey(OwnedBy, on_delete=models.CASCADE, related_name="sender_card")  # Sender's card
     card2 = models.ForeignKey(  # Optional receiver's card for two-way trades
-        "OwnedBy",
+        OwnedBy,
         on_delete=models.CASCADE,
         related_name="receiver_card",
         null=True,
@@ -130,3 +147,14 @@ class TradeRequest(models.Model):
     def __str__(self):
         '''Return a string representation of this trade request.'''
         return f"Trade from {self.profile1} to {self.profile2} (cards: {self.card1} -> {self.card2})"
+
+class Wishlist(models.Model):
+    '''Represents a wishlist relation between a PocketProfile and a Card'''
+
+    profile = models.ForeignKey(PocketProfile, on_delete=models.CASCADE)
+    card = models.ForeignKey(Card, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        '''Return a string representation of this OwneWishlistdBy relation.'''
+        return f'{self.profile} wishlists {self.card}'

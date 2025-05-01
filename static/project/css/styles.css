@@ -145,6 +145,22 @@ body {
   border-radius: 8px;
 }
 
+.wishlist-btn {
+  margin-top: 0.5rem;
+  padding: 6px 12px;
+  background-color: #ffd700;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.wishlist-btn:hover {
+  background-color: #ffbf00;
+}
+
 /* CARD MODAL */
 
 .modal {

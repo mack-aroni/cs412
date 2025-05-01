@@ -82,12 +82,58 @@
 
   <hr />
   <!-- Display a list of cards associated with the viewed profile -->
-  <h3>Cards</h3>
+  <h3>Wishlist</h3>
   <div class="card-grid">
-    {% for img in profile_viewed.get_card_images %}
+    {% for card in profile_viewed.get_wishlist %}
     <!-- Display each card image -->
-    <img src="{{ img }}" alt="Card image" width="100" />
+    <div class="card-item">
+      <img
+        class="card-image"
+        src="{{ card.card_image_url }}"
+        alt="{{ card.name }}"
+        onclick="openModal('{{ card.card_image_url }}')"
+      />
+    </div>
     {% endfor %}
   </div>
+
+  <!-- Modal for displaying a larger image of the card when clicked -->
+  <div id="cardModal" class="modal">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="modalImg" />
+  </div>
 </main>
+{% endblock %} {% block extra_scripts %}
+<script>
+  // MODAL FUNCTIONALITY
+
+  // Open the modal with the selected card image
+  function openModal(imageUrl) {
+    const modal = document.getElementById("cardModal");
+    const modalImg = document.getElementById("modalImg");
+
+    modal.style.display = "flex";
+    modalImg.src = imageUrl;
+  }
+
+  // Close the modal
+  function closeModal() {
+    document.getElementById("cardModal").style.display = "none";
+  }
+
+  // Close modal if clicked outside the image area
+  window.addEventListener("click", function (e) {
+    const modal = document.getElementById("cardModal");
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
+
+  // Close modal on pressing Escape key
+  window.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      closeModal();
+    }
+  });
+</script>
 {% endblock %}

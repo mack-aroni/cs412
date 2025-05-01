@@ -16,6 +16,7 @@ urlpatterns = [
     path('profile/', LoginOrProfileView.as_view(), name='profile'),
     path('profile/<int:pk>/', PocketProfileView.as_view(), name='pocket_profile'),
     path('catalog/', CardCatalogView.as_view(), name='catalog'),
+    path('wishlist/', ToggleWishlistView.as_view(), name='wishlist'),
     path('packs/', PackSelectView.as_view(), name='packs'),
 
     # Trade operations
@@ -29,11 +30,11 @@ urlpatterns = [
     # Friend system: requests, actions, and suggestions
     path('friend/requests/', FriendRequestListView.as_view(), name='friend_requests'),
     path('friend/suggestions/', FriendSuggestionListView.as_view(), name="friend_suggestions"),
-    path('send-request/<int:profile_id>/', SendFriendRequestView.as_view(), name='send_request'),
-    path('cancel-request/<int:profile_id>/', CancelFriendRequestView.as_view(), name='cancel_request'),
-    path('accept-request/<int:profile_id>/', AcceptFriendRequestView.as_view(), name='accept_request'),
-    path('decline-request/<int:profile_id>/', DeclineFriendRequestView.as_view(), name='decline_request'),
-    path('remove-friend/<int:profile_id>/', RemoveFriendView.as_view(), name='remove_friend'),
+    path('friend/send-request/<int:profile_id>/', SendFriendRequestView.as_view(), name='send_request'),
+    path('friend/cancel-request/<int:profile_id>/', CancelFriendRequestView.as_view(), name='cancel_request'),
+    path('friend/accept-request/<int:profile_id>/', AcceptFriendRequestView.as_view(), name='accept_request'),
+    path('friend/decline-request/<int:profile_id>/', DeclineFriendRequestView.as_view(), name='decline_request'),
+    path('friend/remove-friend/<int:profile_id>/', RemoveFriendView.as_view(), name='remove_friend'),
 
     # Auth and registration
     path('register/', CreatePocketProfile.as_view(), name='register'),
