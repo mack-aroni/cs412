@@ -125,7 +125,7 @@
               <p>Completed</p>
               {% elif trade.profile1 == profile and trade.rcv_acc == False %}
               <p>Waiting</p>
-              {% elif trade.profile2 == profile and trade.send_acc == False %}
+              {% elif trade.profile2 == profile and trade.rcv_acc == True %}
               <p>Waiting</p>
               {% elif trade.rcv_acc and trade.profile2 != profile %}
               <a href="{% url 'trade_finalize' trade.pk %}">Accept Trade</a>
